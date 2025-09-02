@@ -5,19 +5,22 @@
 ' Model Package
 package "model" {
     class Book {
-        -Long id
-        -String isbn
+        -Map<BookType, Integer>
+        -int ID
         -String title
         -String author
+        -int publicationYear
+        -String isbn
+        -int availableCopies
         -BookType bookType
-        -boolean available
         +Book()
-        +getId(): Long
         +getIsbn(): String
         +getTitle(): String
         +getAuthor(): String
-        +isAvailable(): boolean
-        +setAvailable(boolean): void
+        +getPublicationYear(): int
+        +getAvailableCopies(): int
+        +getBookType(): BookType
+        +setAvailableCopies(int): void
     }
 
     class Member {
@@ -50,12 +53,14 @@ package "model" {
     }
 
     enum BookType {
-        FICTION
-        NON_FICTION
-        SCIENCE
-        HISTORY
-        BIOGRAPHY
-        CHILDREN
+        TUTORIAL
+        REFERENCE
+        CONCEPTUAL
+        PROJECT_BASED
+        CAREER_SOFT_SKILLS
+        TRENDS_FUTURE
+        LANGUAGE_SPECIFIC
+        FRAMEWORK_TOOL_SPECIFIC
     }
 
     enum LoanStatus {
@@ -69,12 +74,14 @@ package "model" {
 ' Repository Package
 package "repository" {
     interface BookRepository {
-        +save(Book): Book
+        +add(Book): Book
+        +delete(Long): void
+        +update(Book): void
         +findById(Long): Optional<Book>
         +findByIsbn(String): Optional<Book>
         +findAll(): List<Book>
         +findAvailableBooks(): List<Book>
-        +delete(Long): void
+
     }
 
     interface MemberRepository {
