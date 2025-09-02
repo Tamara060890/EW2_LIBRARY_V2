@@ -6,8 +6,8 @@ import java.util.Objects;
 
 public class Loan {
     private Long id;
-    private Book book;
-    private Member member;
+    private Book book;  // Object references
+    private Member member;  // Object references
     private LocalDate loanDate; // when the loan starts
     private LocalDate dueDate; // when the book should be returned
     private LocalDate returnDate; // null while not returned
@@ -23,6 +23,11 @@ public class Loan {
         this.loanDate = loanDate;
         this.dueDate = dueDate;
         this.returnDate = returnDate;
+        if (returnDate != null) {
+            this.status = LoanStatus.RETURNED;
+        } else {
+            this.status = LoanStatus.ACTIVE;
+        }
     }
 
     //Getters & Setters
@@ -66,6 +71,16 @@ public class Loan {
     }
     public void setReturnDate(LocalDate returnDate) {
         this.returnDate = returnDate;
+        if (returnDate != null) {
+            this.status = LoanStatus.RETURNED;
+        }
+    }
+
+    public LoanStatus getStatus() {
+        return status;
+    }
+    public void setStatus(LoanStatus status) {
+        this.status = status;
     }
 
 
