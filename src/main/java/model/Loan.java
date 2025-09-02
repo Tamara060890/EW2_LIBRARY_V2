@@ -5,7 +5,7 @@ import java.util.Objects;
 
 
 public class Loan {
-    private Long id;
+    private Long LoanId;
     private Book book;  // Object references
     private Member member;  // Object references
     private LocalDate loanDate; // when the loan starts
@@ -31,11 +31,11 @@ public class Loan {
     }
 
     //Getters & Setters
-    public Long getId() {
-        return id;
+    public Long getLoanId() {
+        return LoanId;
     }
-    public void setId(Long id) {  //Optional
-        this.id = id;
+    public void setLoanId(Long LoanId) {  //Optional
+        this.LoanId = LoanId;
     }
 
     public Book getBook() {
