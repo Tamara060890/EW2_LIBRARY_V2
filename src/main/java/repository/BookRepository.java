@@ -10,10 +10,13 @@ public interface BookRepository {
     void addBook(Book book);
     boolean deleteBook(String intecID);
     boolean editBook(String intecID, Book updatedBook);
-    Book searchByTitle(String title);
-    Book searchByAuthor(String author);
-    Book searchByISBN(String isbn);
-    Book searchByIntecID(String intecID);
+    Book searchBookTitle(String title);
+    Book searchBookAuthor(String author);
+    Book searchBookISBN(String isbn);
+    Book searchBookIntecID(String intecID);
     List<Book> getAllBooks();
+
+    void loadBooksFromFile(String fileName);
+
 }
 
