@@ -1,0 +1,376 @@
+@startuml
+
+    class Book {
+
+        -Long id
+
+        -String isbn
+
+        -String title
+
+        -String author
+
+        -BookType bookType
+
+        -boolean available
+
+        +Book()
+
+        +getId() Long
+
+        +getIsbn() String
+
+        +getTitle() String
+
+        +getAuthor() String
+
+        +getBookType() BookType
+
+        +isAvailable() boolean
+
+        +setAvailable(boolean available)
+
+    }
+
+    class Member {
+
+        -Long id
+
+        -String name
+
+        -String email
+
+        -String membershipNumber
+
+        -LocalDate membershipDate
+
+        +Member()
+
+        +getId() Long
+
+        +getName() String
+
+        +getEmail() String
+
+        +getMembershipNumber() String
+
+        +getMembershipDate() LocalDate
+
+    }
+
+    class Loan {
+
+        -Long id
+
+        -Book book
+
+        -Member member
+
+        -LocalDate loanDate
+
+        -LocalDate dueDate
+
+        -LocalDate returnDate
+
+        -LoanStatus status
+
+        +Loan()
+
+        +getId() Long
+
+        +getBook() Book
+
+        +getMember() Member
+
+        +getLoanDate() LocalDate
+
+        +getDueDate() LocalDate
+
+        +getReturnDate() LocalDate
+
+        +getStatus() LoanStatus
+
+        +returnBook()
+
+        +isOverdue() boolean
+
+    }
+
+    class BookType {
+<<enumeration>>
+
+        FICTION
+
+        NON_FICTION
+
+        SCIENCE
+
+        HISTORY
+
+        BIOGRAPHY
+
+        CHILDREN
+
+    }
+
+    class LoanStatus {
+<<enumeration>>
+
+        ACTIVE
+
+        RETURNED
+
+        OVERDUE
+
+        LOST
+
+    }
+
+    class BookRepository {
+<<interface>>
+
+        +save(Book book) Book
+
+        +findById(Long id) Optional~Book~
+
+        +findByIsbn(String isbn) Optional~Book~
+
+        +findAll() List~Book~
+
+        +findAvailableBooks() List~Book~
+
+        +delete(Long id)
+
+    }
+
+    class MemberRepository {
+<<interface>>
+
+        +save(Member member) Member
+
+        +findById(Long id) Optional~Member~
+
+        +findByEmail(String email) Optional~Member~
+
+        +findAll() List~Member~
+
+        +delete(Long id)
+
+    }
+
+    class LoanRepository {
+<<interface>>
+
+        +save(Loan loan) Loan
+
+        +findById(Long id) Optional~Loan~
+
+        +findByMemberId(Long memberId) List~Loan~
+
+        +findActiveLoans() List~Loan~
+
+        +findOverdueLoans() List~Loan~
+
+        +findAll() List~Loan~
+
+        +delete(Long id)
+
+    }
+
+    class BookRepositoryImpl {
+
+        -List~Book~ books
+
+        +save(Book book) Book
+
+        +findById(Long id) Optional~Book~
+
+        +findByIsbn(String isbn) Optional~Book~
+
+        +findAll() List~Book~
+
+        +findAvailableBooks() List~Book~
+
+        +delete(Long id)
+
+    }
+
+    class MemberRepositoryImpl {
+
+        -List~Member~ members
+
+        +save(Member member) Member
+
+        +findById(Long id) Optional~Member~
+
+        +findByEmail(String email) Optional~Member~
+
+        +findAll() List~Member~
+
+        +delete(Long id)
+
+    }
+
+    class LoanRepositoryImpl {
+
+        -List~Loan~ loans
+
+        +save(Loan loan) Loan
+
+        +findById(Long id) Optional~Loan~
+
+        +findByMemberId(Long memberId) List~Loan~
+
+        +findActiveLoans() List~Loan~
+
+        +findOverdueLoans() List~Loan~
+
+        +findAll() List~Loan~
+
+        +delete(Long id)
+
+    }
+
+
+
+    class BookService {
+
+        -BookRepository bookRepository
+
+        +BookService(BookRepository bookRepository)
+
+        +addBook(Book book) Book
+
+        +findBookById(Long id) Book
+
+        +findBookByIsbn(String isbn) Book
+
+        +getAllBooks() List~Book~
+
+        +getAvailableBooks() List~Book~
+
+        +updateBook(Book book) Book
+
+        +deleteBook(Long id)
+
+    }
+
+    class MemberService {
+
+        -MemberRepository memberRepository
+
+        +MemberService(MemberRepository memberRepository)
+
+        +registerMember(Member member) Member
+
+        +findMemberById(Long id) Member
+
+        +findMemberByEmail(String email) Member
+
+        +getAllMembers() List~Member~
+
+        +updateMember(Member member) Member
+
+        +deleteMember(Long id)
+
+    }
+
+    class LoanService {
+
+        -LoanRepository loanRepository
+
+        -BookRepository bookRepository
+
+        -MemberRepository memberRepository
+
+        +LoanService(LoanRepository loanRepository, BookRepository bookRepository, MemberRepository memberRepository)
+
+        +borrowBook(Long bookId, Long memberId) Loan
+
+        +returnBook(Long loanId) Loan
+
+        +findLoanById(Long id) Loan
+
+        +findLoansByMember(Long memberId) List~Loan~
+
+        +getActiveLoans() List~Loan~
+
+        +getOverdueLoans() List~Loan~
+
+        +calculateFine(Loan loan) BigDecimal
+
+    }
+
+
+    class LibraryFacade {
+
+        -BookService bookService
+
+        -MemberService memberService
+
+        -LoanService loanService
+
+        +LibraryFacade(BookService bookService, MemberService memberService, LoanService loanService)
+
+        +addBook(Book book) Book
+
+        +registerMember(Member member) Member
+
+        +borrowBook(Long bookId, Long memberId) Loan
+
+        +returnBook(Long loanId) Loan
+
+        +searchBooks(String criteria) List~Book~
+
+        +getMemberLoans(Long memberId) List~Loan~
+
+        +getOverdueLoans() List~Loan~
+
+    }
+
+
+    class LibraryApplication {
+
+        +main(String[] args)
+
+        -initializeServices()
+
+        -runApplication()
+
+    }
+
+
+    Book ||--o{ Loan : "is borrowed in"
+
+    Member ||--o{ Loan : "borrows"
+
+    Book ||--|| BookType : "has type"
+
+    Loan ||--|| LoanStatus : "has status"
+
+    BookRepositoryImpl ..|> BookRepository : implements
+
+    MemberRepositoryImpl ..|> MemberRepository : implements
+
+    LoanRepositoryImpl ..|> LoanRepository : implements
+
+    BookService --> BookRepository : uses
+
+    MemberService --> MemberRepository : uses
+
+    LoanService --> LoanRepository : uses
+
+    LoanService --> BookRepository : uses
+
+    LoanService --> MemberRepository : uses
+
+    LibraryFacade --> BookService : uses
+
+    LibraryFacade --> MemberService : uses
+
+    LibraryFacade --> LoanService : uses
+
+    LibraryApplication --> LibraryFacade : creates
+
+
+@enduml

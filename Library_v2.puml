@@ -1,0 +1,219 @@
+@startuml LibraryManagementSystem
+
+!theme plain
+
+' Model Package
+package "model" {
+    class Book {
+        -Long id
+        -String isbn
+        -String title
+        -String author
+        -BookType bookType
+        -boolean available
+        +Book()
+        +getId(): Long
+        +getIsbn(): String
+        +getTitle(): String
+        +getAuthor(): String
+        +isAvailable(): boolean
+        +setAvailable(boolean): void
+    }
+
+    class Member {
+        -Long id
+        -String name
+        -String email
+        -String membershipNumber
+        -LocalDate membershipDate
+        +Member()
+        +getId(): Long
+        +getName(): String
+        +getEmail(): String
+        +getMembershipNumber(): String
+    }
+
+    class Loan {
+        -Long id
+        -Book book
+        -Member member
+        -LocalDate loanDate
+        -LocalDate dueDate
+        -LocalDate returnDate
+        -LoanStatus status
+        +Loan()
+        +getId(): Long
+        +getBook(): Book
+        +getMember(): Member
+        +returnBook(): void
+        +isOverdue(): boolean
+    }
+
+    enum BookType {
+        FICTION
+        NON_FICTION
+        SCIENCE
+        HISTORY
+        BIOGRAPHY
+        CHILDREN
+    }
+
+    enum LoanStatus {
+        ACTIVE
+        RETURNED
+        OVERDUE
+        LOST
+    }
+}
+
+' Repository Package
+package "repository" {
+    interface BookRepository {
+        +save(Book): Book
+        +findById(Long): Optional<Book>
+        +findByIsbn(String): Optional<Book>
+        +findAll(): List<Book>
+        +findAvailableBooks(): List<Book>
+        +delete(Long): void
+    }
+
+    interface MemberRepository {
+        +save(Member): Member
+        +findById(Long): Optional<Member>
+        +findByEmail(String): Optional<Member>
+        +findAll(): List<Member>
+        +delete(Long): void
+    }
+
+    interface LoanRepository {
+        +save(Loan): Loan
+        +findById(Long): Optional<Loan>
+        +findByMemberId(Long): List<Loan>
+        +findActiveLoans(): List<Loan>
+        +findOverdueLoans(): List<Loan>
+        +delete(Long): void
+    }
+
+    package "impl" {
+        class BookRepositoryImpl {
+            -List<Book> books
+            +save(Book): Book
+            +findById(Long): Optional<Book>
+            +findByIsbn(String): Optional<Book>
+            +findAll(): List<Book>
+            +findAvailableBooks(): List<Book>
+            +delete(Long): void
+        }
+
+        class MemberRepositoryImpl {
+            -List<Member> members
+            +save(Member): Member
+            +findById(Long): Optional<Member>
+            +findByEmail(String): Optional<Member>
+            +findAll(): List<Member>
+            +delete(Long): void
+        }
+
+        class LoanRepositoryImpl {
+            -List<Loan> loans
+            +save(Loan): Loan
+            +findById(Long): Optional<Loan>
+            +findByMemberId(Long): List<Loan>
+            +findActiveLoans(): List<Loan>
+            +findOverdueLoans(): List<Loan>
+            +delete(Long): void
+        }
+    }
+}
+
+' Service Package
+package "service" {
+    class BookService {
+        -BookRepository bookRepository
+        +BookService(BookRepository)
+        +addBook(Book): Book
+        +findBookById(Long): Book
+        +findBookByIsbn(String): Book
+        +getAllBooks(): List<Book>
+        +getAvailableBooks(): List<Book>
+        +updateBook(Book): Book
+        +deleteBook(Long): void
+    }
+
+    class MemberService {
+        -MemberRepository memberRepository
+        +MemberService(MemberRepository)
+        +registerMember(Member): Member
+        +findMemberById(Long): Member
+        +findMemberByEmail(String): Member
+        +getAllMembers(): List<Member>
+        +updateMember(Member): Member
+        +deleteMember(Long): void
+    }
+
+    class LoanService {
+        -LoanRepository loanRepository
+        -BookRepository bookRepository
+        -MemberRepository memberRepository
+        +LoanService(LoanRepository, BookRepository, MemberRepository)
+        +borrowBook(Long, Long): Loan
+        +returnBook(Long): Loan
+        +findLoanById(Long): Loan
+        +findLoansByMember(Long): List<Loan>
+        +getActiveLoans(): List<Loan>
+        +getOverdueLoans(): List<Loan>
+        +calculateFine(Loan): BigDecimal
+    }
+}
+
+'' Facade Package
+'package "facade" {
+'    class LibraryFacade {
+'        -BookService bookService
+'        -MemberService memberService
+'        -LoanService loanService
+'        +LibraryFacade(BookService, MemberService, LoanService)
+'        +addBook(Book): Book
+'        +registerMember(Member): Member
+'        +borrowBook(Long, Long): Loan
+'        +returnBook(Long): Loan
+'        +searchBooks(String): List<Book>
+'        +getMemberLoans(Long): List<Loan>
+'        +getOverdueLoans(): List<Loan>
+'    }
+'}
+
+' Main Application (root package)
+class LibraryApplication {
+    +{static} main(String[]): void
+    -{static} initializeServices(): void
+    -{static} runApplication(): void
+}
+
+' Relationships within model
+Book ||--o{ Loan : "is borrowed in"
+Member ||--o{ Loan : "borrows"
+Book ||--|| BookType : "has type"
+Loan ||--|| LoanStatus : "has status"
+
+' Implementation relationships
+BookRepositoryImpl ..|> BookRepository : implements
+MemberRepositoryImpl ..|> MemberRepository : implements
+LoanRepositoryImpl ..|> LoanRepository : implements
+
+' Service dependencies
+BookService --> BookRepository : uses
+MemberService --> MemberRepository : uses
+LoanService --> LoanRepository : uses
+LoanService --> BookRepository : uses
+LoanService --> MemberRepository : uses
+
+'' Facade dependencies
+'LibraryFacade --> BookService : uses
+'LibraryFacade --> MemberService : uses
+'LibraryFacade --> LoanService : uses
+
+'' Main application
+'LibraryApplication --> LibraryFacade : creates
+
+@enduml
