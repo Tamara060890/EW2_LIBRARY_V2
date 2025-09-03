@@ -1,10 +1,19 @@
+
 import java.time.format.TextStyle;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.time.LocalDate;
 import java.util.Scanner;
 import java.util.List;
 
 // TODO: BookService Imports
 import model.Book;
 import model.BookType;
+
+// import your.package.service.BookService;
+import model.Member;
 import service.BookService;
 import repository.BookRepository;
 import repository.BookRepositoryImpl;
@@ -12,22 +21,28 @@ import repository.BookRepositoryImpl;
 // TODO: MemberService Imports
 
 // TODO: LoanService Imports
-
+import service.MemberService;
+// import your.package.repository.impl.BookRepositoryImpl;
 
 public class MainApp {
     private static final Scanner scanner = new Scanner(System.in);
 
     // Service instanties - één keer aanmaken bij opstarten
     private static BookService bookService;
-    // private static MemberService memberService;  // Voor later
+    private static MemberService memberService;  // Voor later
     // private static LoanService loanService;      // Voor later
 
 
     public static void main(String[] args) {
+
         // Initialize Services
         initializeServices();
 
-        //Start Menu
+        // Repository en service initialiseren
+        repository.MemberRepository memberRepo = new repository.MemberRepositoryImpl();
+        memberService = new service.MemberService(memberRepo);
+        
+        //Start menu
         showMainMenu();
     }
 
@@ -278,41 +293,32 @@ public class MainApp {
         }
     }
 
-    // 👥 MEMBER MANAGEMENT MENU
-    public static void showMemberManagement() {
-        boolean inMemberManagement = true;
 
+    // 👥 Member Management Menu
+    private static void showMemberManagement() {
+        boolean inMemberManagement = true;
         while (inMemberManagement) {
-            System.out.println("\n");
-            System.out.println("👥 MEMBER MANAGEMENT (Employee Service)");
+            System.out.println("\n👥 MEMBER MANAGEMENT (Employee Service)");
             System.out.println("=".repeat(40));
             System.out.println("➕ 1. Add Member");
             System.out.println("❌ 2. Delete Member");
             System.out.println("📝 3. Edit Member Details");
             System.out.println("👤 4. View Member Profile");
-            System.out.println("🔙 5. Back to Library Management System");
+            System.out.println("📜 5. Show All Members");
+            System.out.println("🔍 6. Search Member by Email");
+            System.out.println("🔙 7. Back to Library Management System");
             System.out.println("YOUR CHOICE:");
-
             int choice = getIntInput();
 
             switch (choice) {
-                case 1:
-                    addMember();
-                    break;
-                case 2:
-                    deleteMember();
-                    break;
-                case 3:
-                    editMemberDetails();
-                    break;
-                case 4:
-                    viewMemberProfile();
-                    break;
-                case 5:
-                    inMemberManagement = false;
-                    break;
-                default:
-                    System.out.println("❌ Invalid choice. Please try again.");
+                case 1 -> addMember();
+                case 2 -> deleteMember();
+                case 3 -> editMemberDetails();
+                case 4 -> viewMemberProfile();
+                case 5 -> showAllMembers();
+                case 6 -> searchMemberByEmail();
+                case 7 -> inMemberManagement = false;
+                default -> System.out.println("❌ Invalid choice. Please try again.");
             }
         }
     }
@@ -568,6 +574,7 @@ public class MainApp {
         scanner.nextLine();
     }
 
+
     private static void getAllBooks() {
         List<Book> allBooks = bookService.getAllBooks();
         if (allBooks.isEmpty()) {
@@ -586,28 +593,105 @@ public class MainApp {
     // MEMBER MANAGEMENT METHODS
     private static void addMember() {
         System.out.println("\n➕ Lid toevoegen...");
-        System.out.println("Deze functionaliteit wordt nog geïmplementeerd.");
+        System.out.print("Naam: "); String name = scanner.nextLine();
+        System.out.print("Email: "); String email = scanner.nextLine();
+        System.out.print("Telefoonnummer: "); String phone = scanner.nextLine();
+
+        Member member = new Member();
+        member.setName(name);
+        member.setEmail(email);
+        member.setPhoneNumber(phone);
+        member.setMembershipDate(LocalDate.now());
+
+        try {
+            memberService.addMember(member);
+            System.out.println("✅ Lid toegevoegd: " + member.getName());
+        } catch (IllegalArgumentException e) {
+            System.out.println("❌ Fout: " + e.getMessage());
+        }
         System.out.println("Druk op Enter om verder te gaan...");
         scanner.nextLine();
     }
 
     private static void deleteMember() {
-        System.out.println("\n❌ Lid verwijderen...");
-        System.out.println("Deze functionaliteit wordt nog geïmplementeerd.");
+        System.out.print("\nVoer Member ID in om te verwijderen: ");
+        Long id = Long.parseLong(scanner.nextLine());
+
+        try {
+            memberService.removeMember(id);
+            System.out.println("✅ Lid verwijderd.");
+        } catch (MemberService.MemberNotFoundException e) {
+            System.out.println("❌ Fout: " + e.getMessage());
+        }
         System.out.println("Druk op Enter om verder te gaan...");
         scanner.nextLine();
     }
 
     private static void editMemberDetails() {
-        System.out.println("\n📝 Lidgegevens bewerken...");
-        System.out.println("Deze functionaliteit wordt nog geïmplementeerd.");
+        System.out.print("\nVoer Member ID in om te bewerken: ");
+        Long id = Long.parseLong(scanner.nextLine());
+
+        try {
+            Member member = memberService.findMemberById(id);
+            System.out.print("Nieuwe naam (" + member.getName() + "): ");
+            String name = scanner.nextLine(); if(!name.isBlank()) member.setName(name);
+            System.out.print("Nieuw telefoonnummer (" + member.getPhoneNumber() + "): ");
+            String phone = scanner.nextLine(); if(!phone.isBlank()) member.setPhoneNumber(phone);
+            memberService.addMember(member); // Save changes
+            System.out.println("✅ Lidgegevens bijgewerkt: " + member.getName());
+        } catch (MemberService.MemberNotFoundException e) {
+            System.out.println("❌ Fout: " + e.getMessage());
+        }
         System.out.println("Druk op Enter om verder te gaan...");
         scanner.nextLine();
     }
 
     private static void viewMemberProfile() {
-        System.out.println("\n👤 Lidprofiel bekijken...");
-        System.out.println("Deze functionaliteit wordt nog geïmplementeerd.");
+        System.out.print("\nVoer Member ID in om profiel te bekijken: ");
+        Long id = Long.parseLong(scanner.nextLine());
+        try {
+            Member member = memberService.findMemberById(id);
+            System.out.println("Lidprofiel:\n" +
+                    "ID: " + member.getMemberId() + "\n" +
+                    "Naam: " + member.getName() + "\n" +
+                    "Email: " + member.getEmail() + "\n" +
+                    "Telefoon: " + member.getPhoneNumber() + "\n" +
+                    "Membership Number: " + member.getMembershipNumber() + "\n" +
+                    "Membership Date: " + member.getMembershipDate());
+        } catch (MemberService.MemberNotFoundException e) {
+            System.out.println("❌ Fout: " + e.getMessage());
+        }
+        System.out.println("Druk op Enter om verder te gaan...");
+        scanner.nextLine();
+    }
+
+    private static void showAllMembers() {
+        List<Member> members = memberService.showAllMembers();
+
+        // Sorteer op memberId oplopend
+        members.sort((m1, m2) -> m1.getMemberId().compareTo(m2.getMemberId()));
+
+        System.out.println("\n📜 Alle leden (gesorteerd op ID):");
+        for (Member m : members) {
+            System.out.println(m.getMemberId() + " | " + m.getName() + " | " + m.getEmail());
+        }
+        System.out.println("Druk op Enter om verder te gaan...");
+        scanner.nextLine();
+    }
+
+    private static void searchMemberByEmail() {
+        System.out.print("\nVoer e-mail in om te zoeken: ");
+        String email = scanner.nextLine();
+        try {
+            Member member = memberService.searchMemberByEmail(email);
+            System.out.println("Gevonden lid:\n" +
+                    "ID: " + member.getMemberId() + "\n" +
+                    "Naam: " + member.getName() + "\n" +
+                    "Email: " + member.getEmail() + "\n" +
+                    "Telefoon: " + member.getPhoneNumber());
+        } catch (MemberService.MemberNotFoundException e) {
+            System.out.println("❌ Fout: " + e.getMessage());
+        }
         System.out.println("Druk op Enter om verder te gaan...");
         scanner.nextLine();
     }
