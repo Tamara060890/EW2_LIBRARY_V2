@@ -1,4 +1,4 @@
-package repository;
+/*package repository;
 import model.Loan;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -19,7 +19,7 @@ public class LoanRepositoryImpl implements LoanRepository {
             loan.setLoanId();Id(nextLoanId++);
             loans.add(loan);
             return loan;
-        }*/
+        }
     }
 
     @Override
@@ -52,3 +52,4 @@ public class LoanRepositoryImpl implements LoanRepository {
         return false;
     }
 }
+ */
