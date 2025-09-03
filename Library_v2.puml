@@ -24,7 +24,7 @@ package "model" {
     }
 
     class Member {
-        -Long id
+        -Long memberId
         -String name
         -String email
         -String membershipNumber
