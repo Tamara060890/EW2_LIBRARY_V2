@@ -6,7 +6,7 @@ public class Member {
 
     private Long memberId;               // Specifiek voor Member
     private String name;
-    private int age;
+    private int startYear;
     private String phoneNumber;
     private String email;
     private String membershipNumber;
@@ -22,7 +22,7 @@ public class Member {
         this.memberId = memberId;
         this.membershipNumber = membershipNumber;
         this.name = name;
-        this.age = age;
+        this.startYear = age;
         this.phoneNumber = phoneNumber;
         this.email = email;
         this.membershipDate = membershipDate;
@@ -44,12 +44,12 @@ public class Member {
         this.name = name;
     }
 
-    public int getAge() {
-        return age;
+    public int getStartYear() {
+        return startYear;
     }
 
-    public void setAge(int age) {
-        this.age = age;
+    public void setStartYear(int startYear) {
+        this.startYear = startYear;
     }
 
     public String getPhoneNumber() {
