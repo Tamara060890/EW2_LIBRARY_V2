@@ -1,31 +1,33 @@
 package model;
 
-
 import java.time.LocalDate;
 
 public class Member {
-    private Long memberId;              // Uniek ID van het lid
-    private String memberName;          // Naam van het lid
-    private String memberEmail;         // E-mailadres van het lid
-    private String membershipNumber;    // Lidmaatschapsnummer
-    private LocalDate membershipDate;   //
 
+    private Long memberId;               // Specifiek voor Member
+    private String name;
+    private int age;
+    private String phoneNumber;
+    private String email;
+    private String membershipNumber;
+    private LocalDate membershipDate;
 
-    // Lege constructor
+    // Standaard constructor
     public Member() {
     }
 
-    // Constructor om een lid aan te maken met alle gegevens.
-    public Member(Long memberId, String memberName, String memberEmail, String membershipNumber, LocalDate membershipDate) {
+    // Volledige constructor
+    public Member(Long memberId, String membershipNumber, String name, int age,
+                  String phoneNumber, String email, LocalDate membershipDate) {
         this.memberId = memberId;
-        this.memberName = memberName;
-        this.memberEmail = memberEmail;
         this.membershipNumber = membershipNumber;
+        this.name = name;
+        this.age = age;
+        this.phoneNumber = phoneNumber;
+        this.email = email;
         this.membershipDate = membershipDate;
     }
 
-
-    // Getters en setters
     public Long getMemberId() {
         return memberId;
     }
@@ -34,20 +36,36 @@ public class Member {
         this.memberId = memberId;
     }
 
-    public String getMemberName() {
-        return memberName;
+    public String getName() {
+        return name;
     }
 
-    public void setMemberName(String memberName) {
-        this.memberName = memberName;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getMemberEmail() {
-        return memberEmail;
+    public int getAge() {
+        return age;
     }
 
-    public void setMemberEmail(String memberEmail) {
-        this.memberEmail = memberEmail;
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getMembershipNumber() {

@@ -1,23 +1,51 @@
 package repository;
+
 import model.Member;
 
 import java.util.List;
-
 import java.util.Optional;
 
-public interface MemberRepository{
-    // Member opslaan(nieuw toevoegen of bestaande updaten
-    public Member saveMember(Member member);
+/**
+ * Repository interface voor het beheren van Members.
+ * Definieert de basis CRUD-operaties.
+ */
+public interface MemberRepository {
 
-    // Member zoeken op id
-    public Optional<Member> findByMemberId(Long memberId);
+    /**
+     * Voeg een nieuw lid toe of werk een bestaand lid bij.
+     *
+     * @param member Member object om op te slaan
+     * @return opgeslagen Member
+     */
+    Member saveMember(Member member);
 
-    // Member zoeken op emailadres
-    public Optional<Member> findByMemberEmail(String memberEmail);   // contactInfo gebruiken als email
+    /**
+     * Zoek een lid op basis van interne ID.
+     *
+     * @param memberId ID van het lid
+     * @return Optional van Member (leeg als niet gevonden)
+     */
+    Optional<Member> findByMemberId(Long memberId);
 
-    // Alle members ophalen
-    public List<Member> findAllMembers();
+    /**
+     * Zoek een lid op basis van e-mailadres.
+     *
+     * @param email e-mailadres van het lid
+     * @return Optional van Member (leeg als niet gevonden)
+     */
+    Optional<Member> findByEmail(String email);
 
-    // Member verwijderen via id
-    public void deleteMember(Long memberID);
+    /**
+     * Haal alle leden op.
+     *
+     * @return lijst van alle Members
+     */
+    List<Member> findAllMembers();
+
+    /**
+     * Verwijder een lid op basis van ID.
+     *
+     * @param memberId ID van het lid dat verwijderd moet worden
+     */
+    void deleteMember(Long memberId);
 }
