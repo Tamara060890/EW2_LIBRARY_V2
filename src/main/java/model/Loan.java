@@ -1,20 +1,18 @@
 package model;
 
 import java.time.LocalDate;
-import java.util.Objects;
-
 
 public class Loan {
-    private Long LoanId;
-    private Book book;  // Object references
-    private Member member;  // Object references
-    private LocalDate loanDate; // when the loan starts
-    private LocalDate dueDate; // when the book should be returned
-    private LocalDate returnDate; // null while not returned
-    private LoanStatus status; // ACTIVE, RETURNED, OVERDUE, LOST (matches  enum)
+
+    private Long loanId;          // Unique identifier for this loan
+    private Book book;            // The book being borrowed (Object reference)
+    private Member member;        // The member who borrowed the book (Object reference)
+    private LocalDate loanDate;   // When the loan starts
+    private LocalDate dueDate;    // When the book should be returned
+    private LocalDate returnDate; // Null while not returned
+    private LoanStatus status;    // ACTIVE, RETURNED, OVERDUE, LOST
 
     public Loan() {
-
     }
 
     public Loan(Book book, Member member, LocalDate loanDate, LocalDate dueDate, LocalDate returnDate) {
@@ -23,6 +21,8 @@ public class Loan {
         this.loanDate = loanDate;
         this.dueDate = dueDate;
         this.returnDate = returnDate;
+
+        // Keep status consistent with initial data
         if (returnDate != null) {
             this.status = LoanStatus.RETURNED;
         } else {
@@ -30,12 +30,12 @@ public class Loan {
         }
     }
 
-    //Getters & Setters
+    // --- Getters & Setters ---
     public Long getLoanId() {
-        return LoanId;
+        return loanId;
     }
-    public void setLoanId(Long LoanId) {  //Optional
-        this.LoanId = LoanId;
+    public void setLoanId(Long loanId) {
+        this.loanId = loanId;
     }
 
     public Book getBook() {
@@ -56,7 +56,7 @@ public class Loan {
         return loanDate;
     }
     public void setLoanDate(LocalDate loanDate) {
-        this.loanDate = loanDate; // <- fixed case
+        this.loanDate = loanDate;
     }
 
     public LocalDate getDueDate() {
@@ -83,47 +83,35 @@ public class Loan {
         this.status = status;
     }
 
-
-    //Methods
-
-    // Mark this loan as returned now.
+    // --- Methods ---
     public void returnBook() {
-        LocalDate now = LocalDate.now();
-        this.returnDate = now;
-       // this.status = LoanStatus.RETURNED;
+        this.returnDate = LocalDate.now();
+        this.status = LoanStatus.RETURNED;
     }
 
-        //True if the book has been returned
     public boolean isReturned() {
         return returnDate != null;
     }
 
-    //True if today (or the given date) is past due and the book is not returned.
-
     public boolean isOverdue() {
-        LocalDate today = LocalDate.now();
-        if (returnDate != null) {
-            return false;  // already returned
-        }
-        if (dueDate == null) {
-            return false; // no due date set -> not considered overdue
-        }
-        return today.isAfter(dueDate);
+        if (returnDate != null) return false; // already returned
+        if (dueDate == null) return false;    // no due date set
+        return LocalDate.now().isAfter(dueDate);
     }
-
 
     @Override
     public String toString() {
+        String bookTitle = (book != null) ? book.getTitle() : "null";
+        String memberName = (member != null) ? member.getName() : "null";
+
         return "Loan{" +
-                "book=" + (book != null ? book.getTitle() : "null") + //Ik wacht op the getters in de book class
-                ", member=" + (member != null ? member.getName() : "null") + //Ik wacht op the getters in de book class
+                "loanId=" + loanId +
+                ", book=" + bookTitle +
+                ", member=" + memberName +
                 ", loanDate=" + loanDate +
                 ", dueDate=" + dueDate +
                 ", returnDate=" + returnDate +
+                ", status=" + status +
                 '}';
     }
-
-
-
-
 }

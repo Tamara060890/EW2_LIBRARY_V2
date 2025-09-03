@@ -1,16 +1,17 @@
 package repository;
+
 import model.Loan;
 import java.util.List;
 
 public interface LoanRepository {
 
-    // Create or update a loan. Returns the stored instance (with id filled).
+    // Create or update a loan. Returns the stored instance (with loanId filled).
     Loan save(Loan loan);
 
-    // Find a loan by id. Returns null if not found.
-    Loan findById(Long id);
+    // Find a loan by loanId. Returns null if not found.
+    Loan findById(Long loanId);
 
-    // All loans for a given member id.
+    // All loans for a given memberId.
     List<Loan> findByMemberId(Long memberId);
 
     // All loans currently active (not returned).
@@ -22,10 +23,6 @@ public interface LoanRepository {
     // All loans (for listing/debug).
     List<Loan> findAll();
 
-    // Delete by id. Returns true if something was removed.
-    boolean delete(Long id);
-
-
-
-
+    // Delete by loanId. Returns true if something was removed.
+    boolean delete(Long loanId);
 }
