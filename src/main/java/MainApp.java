@@ -1,10 +1,32 @@
 
+
+
 import java.util.Scanner;
+import java.util.List;
+
+// TODO: Voeg je imports toe voor:
+// import your.package.model.Book;
+import model.Book;
+// import your.package.service.BookService;
+import service.BookService;
+// import your.package.repository.BookRepository;
+import repository.BookRepository;
+// import your.package.repository.impl.BookRepositoryImpl;
+
 
 public class MainApp {
     private static final Scanner scanner = new Scanner(System.in);
 
+    // Service instanties - één keer aanmaken bij opstarten
+    private static BookService bookService;
+    // private static MemberService memberService;  // Voor later
+    // private static LoanService loanService;      // Voor later
+
+
     public static void main(String[] args) {
+        // Services initialiseren
+
+        //Menu starten
         showMainMenu();
     }
 
@@ -396,88 +418,3 @@ public class MainApp {
         scanner.nextLine();
     }
 }
-
-
-    /*private static void booksMenu() {
-        boolean back = false;
-        while (!back) {
-            System.out.println("\n--- Books Menu ---");
-            System.out.println("1. Add Book");
-            System.out.println("2. Remove Book");
-            System.out.println("3. Search Book");
-            System.out.println("4. Show All Books");
-            System.out.println("5. Upload file");
-            System.out.println("0. Back");
-            System.out.print("Your choice: ");
-
-            int choice = readChoice();
-            switch (choice) {
-                case 1 -> System.out.println("Adding a book...");
-                case 2 -> System.out.println("Removing a book...");
-                case 3 -> System.out.println("Searching for a book...");
-                case 4 -> System.out.println("Showing all books...");
-                case 5 -> System.out.println("Showing all books...");
-                    repo.loadBooksFromFile("books_inventory.csv");
-
-                    System.out.println("Aantal boeken geladen: " + repo.getAllBooks().size());
-                }
-
-                case 0 -> back = true;
-                default -> System.out.println("Invalid choice, try again.");
-            }
-        }
-    }
-
-    private static void membersMenu() {
-        boolean back = false;
-        while (!back) {
-            System.out.println("\n--- Members Menu ---");
-            System.out.println("1. Add Member");
-            System.out.println("2. Remove Member");
-            System.out.println("3. Search Member");
-            System.out.println("4. Show All Members");
-            System.out.println("0. Back");
-            System.out.print("Your choice: ");
-
-            int choice = readChoice();
-            switch (choice) {
-                case 1 -> System.out.println("Adding a member...");
-                case 2 -> System.out.println("Removing a member...");
-                case 3 -> System.out.println("Searching for a member...");
-                case 4 -> System.out.println("Showing all members...");
-                case 0 -> back = true;
-                default -> System.out.println("Invalid choice, try again.");
-            }
-        }
-    }
-
-    private static void loansMenu() {
-        boolean back = false;
-        while (!back) {
-            System.out.println("\n--- Loans Menu ---");
-            System.out.println("1. Borrow Book");
-            System.out.println("2. Return Book");
-            System.out.println("3. Show All Borrowed Books");
-            System.out.println("0. Back");
-            System.out.print("Your choice: ");
-
-            int choice = readChoice();
-            switch (choice) {
-                case 1 -> System.out.println("Borrowing a book...");
-                case 2 -> System.out.println("Returning a book...");
-                case 3 -> System.out.println("Showing all borrowed books...");
-                case 0 -> back = true;
-                default -> System.out.println("Invalid choice, try again.");
-            }
-        }
-    }
-
-    private static int readChoice() {
-        try {
-            return Integer.parseInt(scanner.nextLine());
-        } catch (NumberFormatException e) {
-            return -1;
-        }
-    }
-}
-     */
