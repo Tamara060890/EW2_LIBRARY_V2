@@ -5,8 +5,8 @@ import java.time.LocalDate;
 public class Loan {
 
     private Long loanId;          // Unique identifier for this loan
-    private Book book;            // The book being borrowed
-    private Member member;        // The member who borrowed the book
+    private Book book;            // The book being borrowed (Object reference)
+    private Member member;        // The member who borrowed the book (Object reference)
     private LocalDate loanDate;   // When the loan starts
     private LocalDate dueDate;    // When the book should be returned
     private LocalDate returnDate; // Null while not returned
