@@ -26,3 +26,4 @@ public interface LoanRepository {
     // Delete by loanId. Returns true if something was removed.
     boolean delete(Long loanId);
 }
+
