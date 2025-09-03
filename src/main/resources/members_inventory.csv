@@ -1,0 +1,13 @@
+memberId,membershipNumber,name,StartYear,phoneNumber,email,membershipDate
+1,MBR-2025-001,Annelies,2025,0498 12 34 56,annelies@example.com,2025-08-15
+2,MBR-2025-002,Richard,2025,0472 98 76 54,richard@example.com,2025-08-16
+3,MBR-2025-003,Dmytro,2025,0460 55 44 33,dmytro@example.com,2025-08-17
+5,MBR-2025-005,Eva,2025,0491 23 45 67,eva@example.com,2025-08-19
+6,MBR-2025-006,Bram,2025,0475 66 77 88,bram@example.com,2025-08-20
+7,MBR-2025-007,Chaima,2025,0468 99 00 11,chaima@example.com,2025-08-21
+8,MBR-2025-008,Haydar,2025,0480 12 34 56,haydar@example.com,2025-08-22
+9,MBR-2025-009,Ira,2025,0499 88 77 66,ira@example.com,2025-08-23
+10,MBR-2025-010,Maxime,2025,0470 11 22 33,maxime@example.com,2025-08-24
+11,MBR-2025-011,Oleksandr,2025,0466 44 55 66,oleksandr@example.com,2025-08-25
+12,MBR-2025-012,Hilal,2025,0489 33 22 11,hilal@example.com,2025-08-26
+13,MBR-2025-013,Victoriia,2025,0477 66 55 44,victoriia@example.com,2025-08-27
