@@ -6,16 +6,16 @@ public class MainApp {
 
     public static void main(String[] args) {
         showMainMenu();
-
     }
 
     // 🏠 Main Menu
     public static void showMainMenu() {
         boolean running = true;
 
-        System.out.println("=================================");
-        System.out.println("   📚 Welcome to the Library! 📚  ");
-        System.out.println("=================================");
+        System.out.println("\n");
+        System.out.println("   📚 Welcome to INTEC Library! 📚  ");
+        System.out.println("    =============================");
+        System.out.println("\n");
 
         while (running) {
             printMainMenu();
@@ -33,18 +33,18 @@ public class MainApp {
                     running = false;
                     break;
                 default:
-                    System.out.println("❌ Ongeldige keuze. Probeer opnieuw.");
+                    System.out.println("❌ Invalid choice. Please try again.");
             }
         }
     }
 
     private static void printMainMenu() {
-        System.out.println("\n" + "=".repeat(40));
         System.out.println("🏠 MAIN MENU");
         System.out.println("=".repeat(40));
         System.out.println("📖 1. Library Self Service");
         System.out.println("🛠️ 2. Library Management System");
         System.out.println("🚪 3. Exit");
+        System.out.println("YOUR CHOICE:");
     }
 
     // 📖 Library Self Service Menu
@@ -52,7 +52,7 @@ public class MainApp {
         boolean inSelfService = true;
 
         while (inSelfService) {
-            System.out.println("\n" + "=".repeat(40));
+            System.out.println("\n");
             System.out.println("📖 LIBRARY SELF SERVICE");
             System.out.println("=".repeat(40));
             System.out.println("🔍 1. Search for a Book");
@@ -60,7 +60,7 @@ public class MainApp {
             System.out.println("📥 3. Borrow a Book");
             System.out.println("📤 4. Return a Book");
             System.out.println("🔙 5. Back to Main Menu");
-            System.out.print("\nKies een optie (1-5): ");
+            System.out.println("YOUR CHOICE:");
 
             int choice = getIntInput();
 
@@ -81,7 +81,7 @@ public class MainApp {
                     inSelfService = false;
                     break;
                 default:
-                    System.out.println("❌ Ongeldige keuze. Probeer opnieuw.");
+                    System.out.println("❌ Invalid choice. Please try again.");
             }
         }
     }
@@ -91,14 +91,14 @@ public class MainApp {
         boolean inSearch = true;
 
         while (inSearch) {
-            System.out.println("\n" + "=".repeat(40));
+            System.out.println("\n");
             System.out.println("🔍 SEARCH FOR A BOOK (Self Service)");
             System.out.println("=".repeat(40));
             System.out.println("🔎 1. By Title");
             System.out.println("🖋️ 2. By Author");
             System.out.println("🧾 3. By ISBN");
             System.out.println("🔙 4. Back to Library Self Service");
-            System.out.print("\nKies een optie (1-4): ");
+            System.out.println("YOUR CHOICE:");
 
             int choice = getIntInput();
 
@@ -116,7 +116,7 @@ public class MainApp {
                     inSearch = false;
                     break;
                 default:
-                    System.out.println("❌ Ongeldige keuze. Probeer opnieuw.");
+                    System.out.println("❌ Invalid choice. Please try again.");
             }
         }
     }
@@ -126,13 +126,13 @@ public class MainApp {
         boolean inManagement = true;
 
         while (inManagement) {
-            System.out.println("\n" + "=".repeat(40));
+            System.out.println("\n");
             System.out.println("🛠️ LIBRARY MANAGEMENT SYSTEM (Employee Service)");
             System.out.println("=".repeat(40));
             System.out.println("📚 1. Book Management");
             System.out.println("👥 2. Member Management");
             System.out.println("🔙 3. Back to Main Menu");
-            System.out.print("\nKies een optie (1-3): ");
+            System.out.println("YOUR CHOICE:");
 
             int choice = getIntInput();
 
@@ -147,7 +147,7 @@ public class MainApp {
                     inManagement = false;
                     break;
                 default:
-                    System.out.println("❌ Ongeldige keuze. Probeer opnieuw.");
+                    System.out.println("❌ Invalid choice. Please try again.");
             }
         }
     }
@@ -157,7 +157,7 @@ public class MainApp {
         boolean inBookManagement = true;
 
         while (inBookManagement) {
-            System.out.println("\n" + "=".repeat(40));
+            System.out.println("\n");
             System.out.println("📚 BOOK MANAGEMENT (Employee Service)");
             System.out.println("=".repeat(40));
             System.out.println("➕ 1. Add a Book");
@@ -166,7 +166,7 @@ public class MainApp {
             System.out.println("📤 4. Upload Books via CSV");
             System.out.println("🔍 5. Search Book");
             System.out.println("🔙 6. Back to Library Management System");
-            System.out.print("\nKies een optie (1-6): ");
+            System.out.println("YOUR CHOICE:");
 
             int choice = getIntInput();
 
@@ -190,7 +190,7 @@ public class MainApp {
                     inBookManagement = false;
                     break;
                 default:
-                    System.out.println("❌ Ongeldige keuze. Probeer opnieuw.");
+                    System.out.println("❌ Invalid choice. Please try again.");
             }
         }
     }
@@ -200,7 +200,7 @@ public class MainApp {
         boolean inEmployeeSearch = true;
 
         while (inEmployeeSearch) {
-            System.out.println("\n" + "=".repeat(40));
+            System.out.println("\n");
             System.out.println("🔍 SEARCH FOR A BOOK (Employee Service)");
             System.out.println("=".repeat(40));
             System.out.println("🔎 1. By Title");
@@ -208,7 +208,7 @@ public class MainApp {
             System.out.println("🧾 3. By ISBN");
             System.out.println("🏷️ 4. By Intec ID");
             System.out.println("🔙 5. Back to Book Management");
-            System.out.print("\nKies een optie (1-5): ");
+            System.out.println("YOUR CHOICE:");
 
             int choice = getIntInput();
 
@@ -229,7 +229,7 @@ public class MainApp {
                     inEmployeeSearch = false;
                     break;
                 default:
-                    System.out.println("❌ Ongeldige keuze. Probeer opnieuw.");
+                    System.out.println("❌ Invalid choice. Please try again.");
             }
         }
     }
@@ -239,7 +239,7 @@ public class MainApp {
         boolean inMemberManagement = true;
 
         while (inMemberManagement) {
-            System.out.println("\n" + "=".repeat(40));
+            System.out.println("\n");
             System.out.println("👥 MEMBER MANAGEMENT (Employee Service)");
             System.out.println("=".repeat(40));
             System.out.println("➕ 1. Add Member");
@@ -247,7 +247,7 @@ public class MainApp {
             System.out.println("📝 3. Edit Member Details");
             System.out.println("👤 4. View Member Profile");
             System.out.println("🔙 5. Back to Library Management System");
-            System.out.print("\nKies een optie (1-5): ");
+            System.out.println("YOUR CHOICE:");
 
             int choice = getIntInput();
 
@@ -268,7 +268,7 @@ public class MainApp {
                     inMemberManagement = false;
                     break;
                 default:
-                    System.out.println("❌ Ongeldige keuze. Probeer opnieuw.");
+                    System.out.println("❌ Invalid choice. Please try again.");
             }
         }
     }

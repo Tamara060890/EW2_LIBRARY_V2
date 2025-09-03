@@ -1,4 +1,4 @@
-package repository;
+/*package repository;
 import model.Loan;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -25,18 +25,6 @@ public class LoanRepositoryImpl implements LoanRepository {
             return loan;
         }
 
-        // Update existing loan: replace the one with the same loanId
-        for (int i = 0; i < loans.size(); i++) {
-            Loan current = loans.get(i);
-            if (loan.getLoanId().equals(current.getLoanId())) {
-                loans.set(i, loan);
-                return loan;
-            }
-        }
-
-        // If loanId was set but not found, treat it like a new row
-        loans.add(loan);
-        return loan;
     }
 
         @Override
@@ -86,3 +74,4 @@ public class LoanRepositoryImpl implements LoanRepository {
         return loans.removeIf(l -> id.equals(l.getLoanId()));
     }
 }
+ */
