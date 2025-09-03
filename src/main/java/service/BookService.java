@@ -1,15 +1,18 @@
 package service;
 
-// SERVICE (book): This class is responsible for the business logic, this is where you decide what will happen when you want to add or search,...
+// SERVICE (book): This class is responsible for the business logic, this is where you decide what will happen when you want to add, edit, search,...
+// This class uses the BookRepository to save or retrieve data from
 
 import model.Book;
 import model.BookType;
 import repository.BookRepository;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
+import java.util.ArrayList;
 
 public class BookService {
     private final BookRepository bookRepository;
@@ -24,9 +27,11 @@ public class BookService {
     }
 
     public Book addBook(BookType bookType, String title, String author, int publicationYear, String isbn, int availableCopies) {
-        String intecID = String.format("INTEC%05d", counter++);
-        Book book = new Book(intecID, bookType, title, author, publicationYear,isbn, availableCopies);
+        String intecID = generateIntecID();
+        Book book = new Book(intecID, bookType, title, author, publicationYear, isbn, availableCopies);
         bookRepository.addBook(book);
+        System.out.println(book);
+        System.out.println("✅ New book added successfully!");
         return book;
     }
 
@@ -34,15 +39,15 @@ public class BookService {
         return bookRepository.deleteBook(intecID);
     }
 
-    public boolean editBook(String intecID, Book updatedBook) {
-        return bookRepository.editBook(intecID, updatedBook);
+    public void updateBook(Book updatedBook) {
+        bookRepository.updateBook(updatedBook);
     }
 
     public Book searchBookTitle(String title) {
         return bookRepository.searchBookTitle(title);
     }
 
-    public Book searchBookAuthor(String author) {
+    public List<Book> searchBookAuthor(String author) {
         return bookRepository.searchBookAuthor(author);
     }
 
@@ -59,6 +64,8 @@ public class BookService {
     }
 
     public void loadBooksFromFile(String fileName) {
+        int uploadedCount = 0;
+
         try (InputStream is = getClass().getClassLoader().getResourceAsStream(fileName);
              BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
 
@@ -67,13 +74,12 @@ public class BookService {
                 return;
             }
 
-
             String line;
             boolean firstLine = true;
-            while((line = reader.readLine()) != null) { // Skip header
+            while ((line = reader.readLine()) != null) {
                 if (firstLine) {
-                    firstLine= false;
-                    continue;
+                    firstLine = false;
+                    continue; // skip header
                 }
 
                 String[] parts = line.split(",");
@@ -85,18 +91,23 @@ public class BookService {
                     int availableCopies = Integer.parseInt(parts[4].trim());
                     BookType bookType = BookType.valueOf(parts[5].trim().toUpperCase());
 
+                    // Genereer intecID en voeg toe via BookService
                     String intecID = generateIntecID();
+                    Book book = new Book(intecID, bookType, title, author, publicationYear, isbn, availableCopies);
+                    bookRepository.addBook(book);
+                    uploadedCount++;
 
-                    addBook(bookType, title, author, publicationYear, isbn, availableCopies);
                 }
             }
 
-            System.out.println("Upload successful from:  " + fileName);
+            System.out.println("✅ " + uploadedCount + " books successfully added from: " + fileName);
 
-        } catch (Exception e) {
-            System.err.println("Error: " + e.getMessage());
+        } catch (IOException | IllegalArgumentException e) {
+            System.out.println("Error: " + e.getMessage());
         }
     }
 
-
 }
+
+
+

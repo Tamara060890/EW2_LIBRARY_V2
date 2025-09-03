@@ -1,6 +1,5 @@
 Title,Author,Year,ISBN,Copies,BookType
 Head First Java,Kathy Sierra,2005,9780596009205,5,TUTORIAL
-Effective Java,Joshua Bloch,2018,9780134685991,4,REFERENCE
 Clean Code,Robert C. Martin,2008,9780132350884,3,CONCEPTUAL
 Java Projects,Bpb Publications,2020,9789389898046,6,PROJECT_BASED
 The Pragmatic Programmer,Andrew Hunt,1999,9780201616224,2,CAREER_SOFT_SKILLS

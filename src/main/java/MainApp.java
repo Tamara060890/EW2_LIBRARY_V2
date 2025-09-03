@@ -1,6 +1,5 @@
 
-
-
+import java.time.format.TextStyle;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -9,17 +8,21 @@ import java.time.LocalDate;
 import java.util.Scanner;
 import java.util.List;
 
-// TODO: Voeg je imports toe voor:
-// import your.package.model.Book;
+// TODO: BookService Imports
 import model.Book;
+import model.BookType;
+
 // import your.package.service.BookService;
 import model.Member;
 import service.BookService;
-// import your.package.repository.BookRepository;
 import repository.BookRepository;
+import repository.BookRepositoryImpl;
+
+// TODO: MemberService Imports
+
+// TODO: LoanService Imports
 import service.MemberService;
 // import your.package.repository.impl.BookRepositoryImpl;
-
 
 public class MainApp {
     private static final Scanner scanner = new Scanner(System.in);
@@ -31,12 +34,33 @@ public class MainApp {
 
 
     public static void main(String[] args) {
+
+        // Initialize Services
+        initializeServices();
+
         // Repository en service initialiseren
         repository.MemberRepository memberRepo = new repository.MemberRepositoryImpl();
         memberService = new service.MemberService(memberRepo);
-        //Menu starten
+        
+        //Start menu
         showMainMenu();
     }
+
+    //Initialize all services with dependencies
+    private static void initializeServices() {
+        // BookRepository instance
+        BookRepository bookRepository = new BookRepositoryImpl();
+
+        // BookService instance with dependency injection
+        bookService = new BookService(bookRepository);
+
+        // MemberRepository memberRepository = new MemberRepositoryImpl();
+        // memberService = new MemberService(memberRepository);
+
+        // LoanRepository loanRepository = new LoanRepositoryImpl();
+        // loanService = new LoanService(loanRepository);
+    }
+
 
     // 🏠 Main Menu
     public static void showMainMenu() {
@@ -72,7 +96,7 @@ public class MainApp {
         System.out.println("🏠 MAIN MENU");
         System.out.println("=".repeat(40));
         System.out.println("📖 1. Library Self Service");
-        System.out.println("🛠️ 2. Library Management System");
+        System.out.println("🛠️ 2. Library Management");
         System.out.println("🚪 3. Exit");
         System.out.println("YOUR CHOICE:");
     }
@@ -137,7 +161,7 @@ public class MainApp {
                     searchByTitle();
                     break;
                 case 2:
-                    searchByAuthor();
+                    //searchByAuthor();
                     break;
                 case 3:
                     searchByISBN();
@@ -195,7 +219,8 @@ public class MainApp {
             System.out.println("📝 3. Edit a Book");
             System.out.println("📤 4. Upload Books via CSV");
             System.out.println("🔍 5. Search Book");
-            System.out.println("🔙 6. Back to Library Management System");
+            System.out.println("🔍 6. Show all Books");
+            System.out.println("🔙 7. Back to Library Management System");
             System.out.println("YOUR CHOICE:");
 
             int choice = getIntInput();
@@ -208,7 +233,7 @@ public class MainApp {
                     deleteBook();
                     break;
                 case 3:
-                    editBook();
+                    updateBook();
                     break;
                 case 4:
                     uploadBooksCSV();
@@ -217,6 +242,9 @@ public class MainApp {
                     showSearchBookEmployee();
                     break;
                 case 6:
+                    getAllBooks();
+                    break;
+                case 7:
                     inBookManagement = false;
                     break;
                 default:
@@ -225,7 +253,8 @@ public class MainApp {
         }
     }
 
-    // 🔍 Search for a Book (Employee Service)
+
+    // 🔍 SEARCH BOOK MENU (Employee Service)
     public static void showSearchBookEmployee() {
         boolean inEmployeeSearch = true;
 
@@ -247,7 +276,7 @@ public class MainApp {
                     searchByTitle();
                     break;
                 case 2:
-                    searchByAuthor();
+                    //searchByAuthor();
                     break;
                 case 3:
                     searchByISBN();
@@ -263,6 +292,7 @@ public class MainApp {
             }
         }
     }
+
 
     // 👥 Member Management Menu
     private static void showMemberManagement() {
@@ -293,7 +323,7 @@ public class MainApp {
         }
     }
 
-    // Helper method voor input validatie
+    // Helper method for input validation
     private static int getIntInput() {
         try {
             return Integer.parseInt(scanner.nextLine());
@@ -324,30 +354,51 @@ public class MainApp {
         scanner.nextLine();
     }
 
+
+    // SEARCH BOOK METHODS
     private static void searchByTitle() {
-        System.out.print("\n🔎 Voer de titel in: ");
+        System.out.print("\n🔎 ENTER TITLE: ");
         String title = scanner.nextLine();
-        System.out.println("Zoeken naar boek met titel: " + title);
-        System.out.println("Deze functionaliteit wordt nog geïmplementeerd.");
-        System.out.println("Druk op Enter om verder te gaan...");
+        System.out.println("Search for books with title " + title);
+
+        Book foundBook = bookService.searchBookTitle(title);
+        if (foundBook != null) {
+            System.out.println("📘 Book found: " + foundBook);
+        } else {
+            System.out.println("❌ No books found with this title.");
+        }
+
+        System.out.println("Press enter to continue...");
         scanner.nextLine();
     }
 
-    private static void searchByAuthor() {
-        System.out.print("\n🖋️ Voer de auteur in: ");
+    /*private static void searchByAuthor() {
+        System.out.print("\n🖋️ ENTER AUTHOR: ");
         String author = scanner.nextLine();
-        System.out.println("Zoeken naar boek van auteur: " + author);
-        System.out.println("Deze functionaliteit wordt nog geïmplementeerd.");
+
+        try {
+            List<Book> books = bookService.searchBookAuthor(author);
+            displaySearchResults(books, "auteur: " + author);
+        } catch (Exception e) {
+            System.out.println("❌ Fout bij zoeken: " + e.getMessage());
+        }
+
         System.out.println("Druk op Enter om verder te gaan...");
         scanner.nextLine();
-    }
+    }*/
 
     private static void searchByISBN() {
-        System.out.print("\n🧾 Voer het ISBN in: ");
+        System.out.print("\n🧾 ENTER ISBN: ");
         String isbn = scanner.nextLine();
-        System.out.println("Zoeken naar boek met ISBN: " + isbn);
-        System.out.println("Deze functionaliteit wordt nog geïmplementeerd.");
-        System.out.println("Druk op Enter om verder te gaan...");
+
+        Book foundBook = bookService.searchBookISBN(isbn);
+        if (foundBook != null) {
+            System.out.println("📘 Book found: " + foundBook);
+        } else {
+            System.out.println("❌ No books found with this ISBN.");
+        }
+
+        System.out.println("Press enter to continue...");
         scanner.nextLine();
     }
 
@@ -360,35 +411,186 @@ public class MainApp {
         scanner.nextLine();
     }
 
+
+    // BOOK MANAGEMENT METHODS
     private static void addBook() {
-        System.out.println("\n➕ Boek toevoegen...");
-        System.out.println("Deze functionaliteit wordt nog geïmplementeerd.");
-        System.out.println("Druk op Enter om verder te gaan...");
+        System.out.println("\n➕ ADD BOOK");
+
+        System.out.print("\uD83D\uDCD8 Book title: ");
+        String title = scanner.nextLine();
+
+        System.out.print("\uFE0F Author: ");
+        String author = scanner.nextLine();
+
+        System.out.print("\uD83D\uDCC5 Year of publication: ");
+        int year = getIntInput();
+
+        System.out.print("\uD83D\uDD22 ISBN: ");
+        String isbn = scanner.nextLine();
+
+        System.out.print("\uD83D\uDCDA Available copies: ");
+        int copies = getIntInput();
+        scanner.nextLine();
+
+        System.out.print("Booktype: " +
+                "    TUTORIAL(1),           // Practical guides and how-to books\n" +
+                "    REFERENCE(2),          // Reference works and documentation\n" +
+                "    CONCEPTUAL(3),         // Theory and algorithms\n" +
+                "    PROJECT_BASED(4),      // Books based on projects\n" +
+                "    CAREER_SOFT_SKILLS(5), // Career development and soft skills\n" +
+                "    TRENDS_FUTURE(6),      // Technology and future vision\n" +
+                "    LANGUAGE_SPECIFIC(7),  // Books per programming language\n" +
+                "    FRAMEWORK_TOOL(8);      // Books about tools and frameworks");
+        BookType type = BookType.valueOf(scanner.nextLine().toUpperCase());
+
+        Book newbook = bookService.addBook(type, title, author, year, isbn, copies);
+
+        System.out.println("✅ NEW BOOK!");
+        System.out.println("Book ID: " + newbook.getIntecID());
+
+        System.out.println("Press enter to continue...");
         scanner.nextLine();
     }
 
     private static void deleteBook() {
-        System.out.println("\n❌ Boek verwijderen...");
-        System.out.println("Deze functionaliteit wordt nog geïmplementeerd.");
-        System.out.println("Druk op Enter om verder te gaan...");
+        System.out.println("\n❌ DELETE BOOK");
+        try {
+            System.out.print("Enter Intec ID: ");
+            String IntecID = scanner.nextLine();
+
+            boolean deleted = bookService.deleteBook(IntecID);
+
+            if (deleted) {
+                System.out.println("✅ BOOK DELETED");
+            } else {
+                System.out.println("❌ Book not found.");
+            }
+
+        } catch (NumberFormatException e) {
+            System.out.println("❌ Invalid ID.");
+        } catch (Exception e) {
+            System.out.println("❌ Error: " + e.getMessage());
+        }
+
+        System.out.println("Press enter to continue...");
         scanner.nextLine();
     }
 
-    private static void editBook() {
-        System.out.println("\n📝 Boek bewerken...");
-        System.out.println("Deze functionaliteit wordt nog geïmplementeerd.");
-        System.out.println("Druk op Enter om verder te gaan...");
+    private static void updateBook() {
+        System.out.println("\n📝 UPDATE BOOK");
+        try {
+            System.out.print("Enter Intec ID: ");
+            String IntecID = scanner.nextLine();
+
+            // Eerst huidige boek ophalen
+            Book existingBook = bookService.searchBookIntecID(IntecID);
+
+            if (existingBook == null) {
+                System.out.println("❌ Book not found.");
+                System.out.println("Press enter to continue...");
+                scanner.nextLine();
+                return;
+            }
+
+            System.out.println("Current data:");
+            System.out.println("Book title: " + existingBook.getTitle());
+            System.out.println("Author: " + existingBook.getAuthor());
+            System.out.println("Year: " + existingBook.getPublicationYear());
+            System.out.println("ISBN: " + existingBook.getIsbn());
+            System.out.println("Copies: " + existingBook.getAvailableCopies());
+            System.out.println("Type: " + existingBook.getBookType());
+
+            System.out.print("New Book title (press enter to keep): ");
+            String newTitle = scanner.nextLine();
+            if (newTitle.trim().isEmpty()) {
+                newTitle = existingBook.getTitle();
+            }
+
+            System.out.print("New author (press enter to keep): ");
+            String newAuthor = scanner.nextLine();
+            if (newAuthor.trim().isEmpty()) {
+                newAuthor = existingBook.getAuthor();
+            }
+
+            System.out.print("New year (press enter to keep): ");
+            String yearInput = scanner.nextLine();
+            int newYear = existingBook.getPublicationYear();
+            if (!yearInput.trim().isEmpty()) {
+                try {
+                    newYear = Integer.parseInt(yearInput);
+                } catch (NumberFormatException e) {
+                    System.out.println("❌ Invalid year, keeping original.");
+                }
+            }
+
+            System.out.print("New ISBN (press enter to keep): ");
+            String newIsbn = scanner.nextLine();
+            if (newIsbn.trim().isEmpty()) {
+                newIsbn = existingBook.getIsbn();
+            }
+
+            System.out.print("New available copies (press enter to keep): ");
+            String copiesInput = scanner.nextLine();
+            int newCopies = existingBook.getAvailableCopies();
+            if (!copiesInput.trim().isEmpty()) {
+                try {
+                    newCopies = Integer.parseInt(copiesInput);
+                } catch (NumberFormatException e) {
+                    System.out.println("❌ Invalid number, keeping original.");
+                }
+            }
+
+            // Create updated book object
+            Book updatedBook = new Book(
+                    existingBook.getIntecID(),
+                    existingBook.getBookType(),
+                    newTitle,
+                    newAuthor,
+                    newYear,
+                    newIsbn,
+                    newCopies
+            );
+
+            // BookService aanroepen om boek te updaten
+            bookService.updateBook(updatedBook);
+
+            System.out.println("✅ Book successfully updated!");
+
+        } catch (Exception e) {
+            System.out.println("❌ Error updating book: " + e.getMessage());
+        }
+
+        System.out.println("Press enter to continue...");
         scanner.nextLine();
     }
 
     private static void uploadBooksCSV() {
-        System.out.println("\n📤 Boeken uploaden via CSV...");
-        System.out.println("Deze functionaliteit wordt nog geïmplementeerd.");
-        System.out.println("Druk op Enter om verder te gaan...");
+        System.out.println("\n📤 Add books via CSV...");
+        System.out.print("📤 Enter file name (books_inventory.csv): ");
+        String fileName = scanner.nextLine();
+        bookService.loadBooksFromFile(fileName);
+        System.out.println("✅ CSV data added to Inventory.\n");
+
         scanner.nextLine();
     }
 
-    // ================= Member Functionalities =================
+
+    private static void getAllBooks() {
+        List<Book> allBooks = bookService.getAllBooks();
+        if (allBooks.isEmpty()) {
+            System.out.println("📭 No books found in inventory.");
+        } else {
+            System.out.println("\n📚 All books in inventory:");
+            for (Book book : allBooks) {
+                System.out.println(book);
+                System.out.println("-----------------------------");
+            }
+        }
+
+    }
+
+
+    // MEMBER MANAGEMENT METHODS
     private static void addMember() {
         System.out.println("\n➕ Lid toevoegen...");
         System.out.print("Naam: "); String name = scanner.nextLine();
