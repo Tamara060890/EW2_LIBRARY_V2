@@ -1,3 +1,4 @@
+/*
 import java.util.Scanner;
 public class MainApp {
     private static final Scanner scanner = new Scanner(System.in);
@@ -43,6 +44,7 @@ public class MainApp {
             System.out.println("2. Remove Book");
             System.out.println("3. Search Book");
             System.out.println("4. Show All Books");
+            System.out.println("5. Upload file");
             System.out.println("0. Back");
             System.out.print("Your choice: ");
 
@@ -52,6 +54,12 @@ public class MainApp {
                 case 2 -> System.out.println("Removing a book...");
                 case 3 -> System.out.println("Searching for a book...");
                 case 4 -> System.out.println("Showing all books...");
+                case 5 -> System.out.println("Showing all books...");
+                    repo.loadBooksFromFile("books_inventory.csv");
+
+                    System.out.println("Aantal boeken geladen: " + repo.getAllBooks().size());
+                }
+
                 case 0 -> back = true;
                 default -> System.out.println("Invalid choice, try again.");
             }
@@ -110,3 +118,4 @@ public class MainApp {
         }
     }
 }
+*/
