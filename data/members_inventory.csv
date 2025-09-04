@@ -1,6 +1,6 @@
 memberId,membershipNumber,name,startYear,phoneNumber,email,membershipDate
 1,MBR-2025-001,Annelies,2025,1245687,annelies@example.com,2025-09-04
-2,MBR-2025-002,Tamara,2025,045612697,louiza@example.com,2025-09-04
+2,MBR-2025-002,Tamara,2025,045612697,tamara@example.com,2025-09-04
 3,MBR-2025-003,Dmytro,2025,0460 55 44 33,dmytro@example.com,2025-08-17
 5,MBR-2025-005,Eva,2025,0491 23 45 67,eva@example.com,2025-08-19
 6,MBR-2025-006,Bram,2025,0475 66 77 88,bram@example.com,2025-08-20
