@@ -7,18 +7,14 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Scanner;
 import java.util.List;
-
-import model.Loan;
+import model.*
 import repository.*;
 import service.LoanService;
 
 
-// TODO: BookService Imports
-import model.Book;
-import model.BookType;
-
 // import your.package.service.BookService;
 import model.Member;
+import repository.MemberRepository;
 import service.BookService;
 
 // TODO: MemberService Imports
@@ -26,8 +22,6 @@ import service.BookService;
 // TODO: LoanService Imports
 import service.MemberService;
 // import your.package.repository.impl.BookRepositoryImpl;
-
-
 
 public class MainApp {
     private static final Scanner scanner = new Scanner(System.in);
@@ -42,30 +36,51 @@ public class MainApp {
 
     public static void main(String[] args) {
 
-        // Initialize Services
+    //Initialize all services with dependencies
+
+        //Eerst services klaarzetten, zodat alles beschikbaar is.
+        //Dan CSV inladen, zodat je zeker weet dat bookService klaar is.
+        //Dan optioneel tonen van inventory, wat logisch volgt op het inladen.
+        //Tot slot het menu, zodat de gebruiker verder kan werken.
+
+        // 1. Initialize Services
         initializeServices();
 
-        //Start menu
+
+        // Repository en service initialiseren
+        MemberRepository memberRepo = new repository.MemberRepositoryImpl();
+        memberService = new service.MemberService(memberRepo);
+
+        // 3. Automatisch inladen van books_inventory.csv bij opstart
+        bookService.loadBooksFromFile("books_inventory.csv");
+        
+        //4. Start menu
         showMainMenu();
     }
 
-    //Initialize all services with dependencies
+    // Initialize all services with dependencies
+  
     private static void initializeServices() {
         // BookRepository instance
         BookRepository bookRepository = new BookRepositoryImpl();
-
-        // BookService
         bookService = new BookService(bookRepository);
 
         // MemberRepository + MemberService
         MemberRepository memberRepository = new MemberRepositoryImpl();
         memberService = new MemberService(memberRepository);
 
-        // LoanRepository + LoanService (depends on the 2 repos)
+        // Loan
         LoanRepository loanRepository = new LoanRepositoryImpl();
         loanService = new LoanService(loanRepository, bookRepository, memberRepository);
     }
 
+
+    // Authentication method to enter Library Management
+    private static boolean authenticate() {
+        System.out.print("🔐 Add login code to access Library Management: ");
+        String password = scanner.nextLine();
+        return password.equals("admin123"); // Hard coded password for demo purposes, must be implemented more secure in the next quality phase.
+    }
 
 
     // 🏠 Main Menu
@@ -73,9 +88,9 @@ public class MainApp {
         boolean running = true;
 
         System.out.println("\n");
-        System.out.println("   📚 Welcome to INTEC Library! 📚  ");
-        System.out.println("    =============================");
-        System.out.println("\n");
+        System.out.println("📚 Welcome to INTEC Library! 📚  ");
+        System.out.println("=".repeat(40));
+        //System.out.println("\n");
 
         while (running) {
             printMainMenu();
@@ -86,10 +101,15 @@ public class MainApp {
                     showLibrarySelfService();
                     break;
                 case 2:
+                    if (authenticate()) {
                     showLibraryManagementSystem();
-                    break;
+                } else {
+                    System.out.println("❌ Invalid login code. Access refused.");
+                }
+                break;
+
                 case 3:
-                    System.out.println("\n👋 Bedankt voor het gebruik van het Library System!");
+                    System.out.println("\n👋 Thank you for visiting the Intec Library!");
                     running = false;
                     break;
                 default:
@@ -103,7 +123,8 @@ public class MainApp {
         System.out.println("=".repeat(40));
         System.out.println("📖 1. Library Self Service");
         System.out.println("🛠️ 2. Library Management");
-        System.out.println("🚪 3. Exit");
+        System.out.println("🚪 0. Exit");
+        System.out.println("");
         System.out.println("YOUR CHOICE:");
     }
 
@@ -119,7 +140,7 @@ public class MainApp {
             System.out.println("📚 2. View Borrowed Books");
             System.out.println("📥 3. Borrow a Book");
             System.out.println("📤 4. Return a Book");
-            System.out.println("🔙 5. Back to Main Menu");
+            System.out.println("🔙 0. Back to Main Menu");
             System.out.println("YOUR CHOICE:");
 
             int choice = getIntInput();
@@ -137,7 +158,7 @@ public class MainApp {
                 case 4:
                     returnBook();
                     break;
-                case 5:
+                case 0:
                     inSelfService = false;
                     break;
                 default:
@@ -157,7 +178,7 @@ public class MainApp {
             System.out.println("🔎 1. By Title");
             System.out.println("🖋️ 2. By Author");
             System.out.println("🧾 3. By ISBN");
-            System.out.println("🔙 4. Back to Library Self Service");
+            System.out.println("🔙 0. Back to Library Self Service");
             System.out.println("YOUR CHOICE:");
 
             int choice = getIntInput();
@@ -172,7 +193,7 @@ public class MainApp {
                 case 3:
                     searchByISBN();
                     break;
-                case 4:
+                case 0:
                     inSearch = false;
                     break;
                 default:
@@ -191,7 +212,8 @@ public class MainApp {
             System.out.println("=".repeat(40));
             System.out.println("📚 1. Book Management");
             System.out.println("👥 2. Member Management");
-            System.out.println("🔙 3. Back to Main Menu");
+            System.out.println("🔙 0. Back to Main Menu");
+            System.out.println("");
             System.out.println("YOUR CHOICE:");
 
             int choice = getIntInput();
@@ -203,7 +225,7 @@ public class MainApp {
                 case 2:
                     showMemberManagement();
                     break;
-                case 3:
+                case 0:
                     inManagement = false;
                     break;
                 default:
@@ -220,33 +242,35 @@ public class MainApp {
             System.out.println("\n");
             System.out.println("📚 BOOK MANAGEMENT (Employee Service)");
             System.out.println("=".repeat(40));
-            System.out.println("➕ 1. Add a Book");
-            System.out.println("❌ 2. Delete a Book");
-            System.out.println("📝 3. Edit a Book");
-            System.out.println("📤 4. Upload Books via CSV");
-            System.out.println("🔍 5. Search Book");
+            System.out.println("🔍 1. Search Book");
+            System.out.println("➕ 2. Add a Book");
+            System.out.println("❌ 3. Delete a Book");
+            System.out.println("📝 4. Update a Book");
+            System.out.println("📤 5. Upload Books via CSV");
             System.out.println("🔍 6. Show all Books");
-            System.out.println("🔙 7. Back to Library Management System");
+            System.out.println("🔍 7. Show Book Statistics");
             System.out.println("📚 8. Loans for a Member");
+            System.out.println("🔙 0. Back to Library Management System");
+            System.out.println("");
             System.out.println("YOUR CHOICE:");
 
             int choice = getIntInput();
 
             switch (choice) {
                 case 1:
-                    addBook();
+                    showSearchBookEmployee();
                     break;
                 case 2:
-                    deleteBook();
+                    addBook();
                     break;
                 case 3:
-                    updateBook();
+                    deleteBook();
                     break;
                 case 4:
-                    uploadBooksCSV();
+                    updateBook();
                     break;
                 case 5:
-                    showSearchBookEmployee();
+                    uploadBooksCSV();
                     break;
                 case 6:
                     getAllBooks();
@@ -293,19 +317,21 @@ public class MainApp {
     }
     private static void listLoansByMember() {
         System.out.print("\nMember ID: ");
-        Long memberId = Long.parseLong(scanner.nextLine().trim());
-        List<Loan> list = loanService.getLoansByMember(memberId);
-        if (list == null || list.isEmpty()) {
-            System.out.println("No loans for this member.");
-            return;
-        }
-        System.out.println("Loans:");
-        for (Loan l : list) {
-            System.out.println(" - " + l);
+        try {
+            Long memberId = Long.parseLong(scanner.nextLine().trim());
+            List<Loan> list = loanService.getLoansByMember(memberId);
+            if (list == null || list.isEmpty()) {
+                System.out.println("No loans for this member.");
+                return;
+            }
+            System.out.println("Loans:");
+            for (Loan l : list) {
+                System.out.println(" - " + l);
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("❌ Invalid Member ID.");
         }
     }
-
-
 
 
     // 🔍 SEARCH BOOK MENU (Employee Service)
@@ -318,9 +344,11 @@ public class MainApp {
             System.out.println("=".repeat(40));
             System.out.println("🔎 1. By Title");
             System.out.println("🖋️ 2. By Author");
-            System.out.println("🧾 3. By ISBN");
-            System.out.println("🏷️ 4. By Intec ID");
-            System.out.println("🔙 5. Back to Book Management");
+            System.out.println("🏷️ 3. By Type");
+            System.out.println("🧾 4. By ISBN");
+            System.out.println("🏷️ 5. By Intec ID");
+            System.out.println("🔙 0. Back to Book Management");
+            System.out.println("");
             System.out.println("YOUR CHOICE:");
 
             int choice = getIntInput();
@@ -333,12 +361,15 @@ public class MainApp {
                     //searchByAuthor();
                     break;
                 case 3:
-                    searchByISBN();
+                    //searchByBookType();
                     break;
                 case 4:
-                    searchByIntecID();
+                    searchByISBN();
                     break;
                 case 5:
+                    searchByIntecID();
+                    break;
+                case 0:
                     inEmployeeSearch = false;
                     break;
                 default:
@@ -360,7 +391,8 @@ public class MainApp {
             System.out.println("👤 4. View Member Profile");
             System.out.println("📜 5. Show All Members");
             System.out.println("🔍 6. Search Member by Email");
-            System.out.println("🔙 7. Back to Library Management System");
+            System.out.println("🔙 0. Back to Library Management System");
+            System.out.println("");
             System.out.println("YOUR CHOICE:");
             int choice = getIntInput();
 
@@ -371,7 +403,7 @@ public class MainApp {
                 case 4 -> viewMemberProfile();
                 case 5 -> showAllMembers();
                 case 6 -> searchMemberByEmail();
-                case 7 -> inMemberManagement = false;
+                case 0 -> inMemberManagement = false;
                 default -> System.out.println("❌ Invalid choice. Please try again.");
             }
         }
@@ -425,19 +457,68 @@ public class MainApp {
         System.out.println("Press enter to continue...");
         scanner.nextLine();
     }
-
     /*private static void searchByAuthor() {
         System.out.print("\n🖋️ ENTER AUTHOR: ");
         String author = scanner.nextLine();
 
         try {
             List<Book> books = bookService.searchBookAuthor(author);
+            displaySearchResults(books, "author: " + author);
+        } catch (Exception e) {
+            System.out.println("❌ Error searching: " + e.getMessage());
+        }
+
+        System.out.println("Press enter to continue...");
+        scanner.nextLine();
+    }
+
+    private static void searchByBookType() {
+        bookService.displayBookTypes(); // Show all types
+
+        System.out.print("Enter BookType reference number (1-8): ");
+        int typeRef = getIntInput();
+
+        if (typeRef >= 1 && typeRef <= 8) {
+            List<Book> books = bookService.searchBooksByTypeReference(typeRef);
+            displaySearchResults(books, "BookType reference " + typeRef);
+        } else {
+            System.out.println("❌ Invalid BookType reference. Must be 1-8.");
+        }
+
+        System.out.println("Press enter to continue...");
+        scanner.nextLine();
+    }*/
             displaySearchResults(books, "auteur: " + author);
         } catch (Exception e) {
             System.out.println("❌ Fout bij zoeken: " + e.getMessage());
         }
 
         System.out.println("Druk op Enter om verder te gaan...");
+=======
+            displaySearchResults(books, "author: " + author);
+        } catch (Exception e) {
+            System.out.println("❌ Error searching: " + e.getMessage());
+        }
+
+        System.out.println("Press enter to continue...");
+        scanner.nextLine();
+    }
+
+    private static void searchByBookType() {
+        bookService.displayBookTypes(); // Toon alle types
+
+        System.out.print("Enter BookType reference number (1-8): ");
+        int typeRef = getIntInput();
+
+        if (typeRef >= 1 && typeRef <= 8) {
+            List<Book> books = bookService.searchBooksByTypeReference(typeRef);
+            displaySearchResults(books, "BookType reference " + typeRef);
+        } else {
+            System.out.println("❌ Invalid BookType reference. Must be 1-8.");
+        }
+
+        System.out.println("Press enter to continue...");
+
         scanner.nextLine();
     }*/
 
@@ -457,14 +538,39 @@ public class MainApp {
     }
 
     private static void searchByIntecID() {
-        System.out.print("\n🏷️ Voer het Intec ID in: ");
+        System.out.print("\n🏷️ ENTER INTEC ID: ");
         String intecId = scanner.nextLine();
-        System.out.println("Zoeken naar boek met Intec ID: " + intecId);
-        System.out.println("Deze functionaliteit wordt nog geïmplementeerd.");
-        System.out.println("Druk op Enter om verder te gaan...");
+
+        Book foundBook = bookService.searchBookIntecID(intecId);
+        if (foundBook != null) {
+            System.out.println("📘 Book found: " + foundBook);
+        } else {
+            System.out.println("❌ No books found with this Intec ID.");
+        }
+
+        System.out.println("Press enter to continue...");
         scanner.nextLine();
     }
 
+    private static void showBookStatistics() {
+        bookService.showBookStatistics();
+        System.out.println("Press enter to continue...");
+        scanner.nextLine();
+    }
+
+    // Helper method to show search results
+    private static void displaySearchResults(List<Book> books, String searchCriteria) {
+        if (books.isEmpty()) {
+            System.out.println("❌ No books found for " + searchCriteria);
+        } else {
+            System.out.println("📚 Books found for " + searchCriteria + ":");
+            System.out.println("=".repeat(50));
+            for (Book book : books) {
+                System.out.println(book);
+                System.out.println("-----------------------------");
+            }
+        }
+    }
 
     // BOOK MANAGEMENT METHODS
     private static void addBook() {
@@ -484,24 +590,29 @@ public class MainApp {
 
         System.out.print("\uD83D\uDCDA Available copies: ");
         int copies = getIntInput();
-        scanner.nextLine();
-
-        System.out.print("Booktype: " +
-                "    TUTORIAL(1),           // Practical guides and how-to books\n" +
-                "    REFERENCE(2),          // Reference works and documentation\n" +
-                "    CONCEPTUAL(3),         // Theory and algorithms\n" +
-                "    PROJECT_BASED(4),      // Books based on projects\n" +
-                "    CAREER_SOFT_SKILLS(5), // Career development and soft skills\n" +
-                "    TRENDS_FUTURE(6),      // Technology and future vision\n" +
-                "    LANGUAGE_SPECIFIC(7),  // Books per programming language\n" +
-                "    FRAMEWORK_TOOL(8);      // Books about tools and frameworks");
-        BookType type = BookType.valueOf(scanner.nextLine().toUpperCase());
+        System.out.print("Booktype: \n" +
+                "    1\uFE0F⃣ TUTORIAL(1),           // Practical guides and how-to books\n" +
+                "    2\uFE0F⃣ REFERENCE(2),          // Reference works and documentation\n" +
+                "    3\uFE0F⃣ CONCEPTUAL(3),         // Theory and algorithms\n" +
+                "    4\uFE0F⃣ PROJECT_BASED(4),      // Books based on projects\n" +
+                "    5\uFE0F⃣ CAREER_SOFT_SKILLS(5), // Career development and soft skills\n" +
+                "    6\uFE0F⃣ TRENDS_FUTURE(6),      // Technology and future vision\n" +
+                "    7\uFE0F⃣ LANGUAGE_SPECIFIC(7),  // Books per programming language\n" +
+                "    8\uFE0F⃣ FRAMEWORK_TOOL(8);      // Books about tools and frameworks\n" +
+                "    YOUR CHOICE: ");
+        BookType type = null;
+        int typeNumber = getIntInput();
+        try {
+            type = BookType.fromNumber(typeNumber);
+        } catch (IllegalArgumentException e) {
+            System.out.println("❌ Ongeldig boektype. Probeer opnieuw.");
+            return;
+        }
 
         Book newbook = bookService.addBook(type, title, author, year, isbn, copies);
 
         System.out.println("✅ NEW BOOK!");
-        System.out.println("Book ID: " + newbook.getIntecID());
-
+        System.out.println("\uD83C\uDD94 Book ID: " + newbook.getIntecID());
         System.out.println("Press enter to continue...");
         scanner.nextLine();
     }
@@ -606,8 +717,7 @@ public class MainApp {
             );
 
             // BookService aanroepen om boek te updaten
-           // bookService.updateBook(updatedBook);
-
+            bookService.updateBook(updatedBook);
             System.out.println("✅ Book successfully updated!");
 
         } catch (Exception e) {
@@ -620,21 +730,28 @@ public class MainApp {
 
     private static void uploadBooksCSV() {
         System.out.println("\n📤 Add books via CSV...");
-        System.out.print("📤 Enter file name (books_inventory.csv): ");
+        System.out.print("📤 Enter file name (books_inventory2.csv): ");
         String fileName = scanner.nextLine();
         bookService.loadBooksFromFile(fileName);
         System.out.println("✅ CSV data added to Inventory.\n");
 
+
+        // Check uploaded books
+        System.out.print("Do you want to review the inventory after upload? (Yes/No): ");
+        String antwoord = scanner.nextLine();
+        if (antwoord.equalsIgnoreCase("Yes")) {
+            getAllBooks();
+        }
+
         scanner.nextLine();
     }
-
 
     private static void getAllBooks() {
         List<Book> allBooks = bookService.getAllBooks();
         if (allBooks.isEmpty()) {
             System.out.println("📭 No books found in inventory.");
         } else {
-            System.out.println("\n📚 All books in inventory:");
+            System.out.println("\n📚 All books in inventory (" + allBooks.size() + " copies)");
             for (Book book : allBooks) {
                 System.out.println(book);
                 System.out.println("-----------------------------");
@@ -651,6 +768,7 @@ public class MainApp {
         System.out.print("Email: "); String email = scanner.nextLine();
         System.out.print("Telefoonnummer: "); String phone = scanner.nextLine();
 
+        // Maak een nieuw lid aan
         Member member = new Member();
         member.setName(name);
         member.setEmail(email);
@@ -658,8 +776,13 @@ public class MainApp {
         member.setMembershipDate(LocalDate.now());
 
         try {
-            memberService.addMember(member);
-            System.out.println("✅ Lid toegevoegd: " + member.getName());
+            // Lid toevoegen via service
+            Member savedMember = memberService.addMember(member);
+
+            // Toon bevestiging met het gegenereerde membershipNumber
+            System.out.println("✅ Lid toegevoegd: " + savedMember.getName());
+            System.out.println("Membership Number: " + savedMember.getMembershipNumber());
+            System.out.println("Member ID: " + savedMember.getMemberId());
         } catch (IllegalArgumentException e) {
             System.out.println("❌ Fout: " + e.getMessage());
         }
@@ -672,11 +795,31 @@ public class MainApp {
         Long id = Long.parseLong(scanner.nextLine());
 
         try {
-            memberService.removeMember(id);
-            System.out.println("✅ Lid verwijderd.");
+            // Eerst lid ophalen om de gegevens te tonen
+            Member member = memberService.findMemberById(id);
+
+            // Toon lid info
+            System.out.println("⚠️ Je staat op het punt het volgende lid te verwijderen:");
+            System.out.println("ID: " + member.getMemberId());
+            System.out.println("Naam: " + member.getName());
+            System.out.println("Email: " + member.getEmail());
+            System.out.println("Telefoon: " + member.getPhoneNumber());
+            System.out.println("Membership Number: " + member.getMembershipNumber());
+            System.out.println("Membership Date: " + member.getMembershipDate());
+
+            // Bevestiging vragen
+            System.out.print("Weet je zeker dat je dit lid wilt verwijderen? (ja/nee): ");
+            String confirm = scanner.nextLine();
+            if (confirm.equalsIgnoreCase("ja")) {
+                memberService.removeMember(id);
+                System.out.println("✅ Lid verwijderd: " + member.getName());
+            } else {
+                System.out.println("❌ Verwijderen geannuleerd.");
+            }
         } catch (MemberService.MemberNotFoundException e) {
             System.out.println("❌ Fout: " + e.getMessage());
         }
+
         System.out.println("Druk op Enter om verder te gaan...");
         scanner.nextLine();
     }
@@ -687,15 +830,29 @@ public class MainApp {
 
         try {
             Member member = memberService.findMemberById(id);
+
             System.out.print("Nieuwe naam (" + member.getName() + "): ");
-            String name = scanner.nextLine(); if(!name.isBlank()) member.setName(name);
+            String name = scanner.nextLine();
+            if (!name.isBlank()) member.setName(name);
+
             System.out.print("Nieuw telefoonnummer (" + member.getPhoneNumber() + "): ");
-            String phone = scanner.nextLine(); if(!phone.isBlank()) member.setPhoneNumber(phone);
-            memberService.addMember(member); // Save changes
+            String phone = scanner.nextLine();
+            if (!phone.isBlank()) member.setPhoneNumber(phone);
+
+            System.out.print("Nieuw email (" + member.getEmail() + "): ");
+            String email = scanner.nextLine();
+            if (!email.isBlank()) member.setEmail(email);
+
+            // Opslaan via updateMember
+            memberService.updateMember(member);
+
             System.out.println("✅ Lidgegevens bijgewerkt: " + member.getName());
         } catch (MemberService.MemberNotFoundException e) {
             System.out.println("❌ Fout: " + e.getMessage());
+        } catch (IllegalArgumentException e) {
+            System.out.println("❌ Ongeldige invoer: " + e.getMessage());
         }
+
         System.out.println("Druk op Enter om verder te gaan...");
         scanner.nextLine();
     }
@@ -726,8 +883,16 @@ public class MainApp {
         members.sort((m1, m2) -> m1.getMemberId().compareTo(m2.getMemberId()));
 
         System.out.println("\n📜 Alle leden (gesorteerd op ID):");
+        System.out.println("ID | Naam | Email | Telefoon | Membership Number");
+        System.out.println("---------------------------------------------------");
         for (Member m : members) {
-            System.out.println(m.getMemberId() + " | " + m.getName() + " | " + m.getEmail());
+            System.out.println(
+                    m.getMemberId() + " | " +
+                            m.getName() + " | " +
+                            m.getEmail() + " | " +
+                            m.getPhoneNumber() + " | " +
+                            m.getMembershipNumber()
+            );
         }
         System.out.println("Druk op Enter om verder te gaan...");
         scanner.nextLine();

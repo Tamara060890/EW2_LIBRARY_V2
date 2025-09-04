@@ -72,4 +72,24 @@ public class Book {
     public void setAvailableCopies(int availableCopies) {
         this.availableCopies = availableCopies;
     }
+
+//    @Override
+//    public String toString() {
+//        return "\n📘 Title: " + title +
+//                "\n✍️ Author: " + author +
+//                "\n📅 Publication Year: " + publicationYear +
+//                "\n🔢 ISBN: " + isbn +
+//                "\n📚 Available Copies: " + availableCopies +
+//                "\n📖 Book Type: " + bookType +
+//                "\n🆔 Intec ID: " + intecID;
+//
+//    }
+
+
+    @Override
+     public String toString() {
+     return String.format("\uD83C\uDD94 ID: %s | \uD83D\uDCD8 Title: %s | \uD83C\uDD94 Author: %s | \uD83D\uDCC5 Year: %d | \uD83D\uDD22 ISBN: %s | \uD83D\uDCDA Copies: %d | \uD83D\uDCD6 Type: %s",
+           intecID, title, author, publicationYear, isbn, availableCopies, bookType);
+    }
+
 }

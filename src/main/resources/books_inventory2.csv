@@ -1,0 +1,6 @@
+title,author,publicationYear,isbn,availableCopies,bookType
+Introduction to Algorithms,Cormen et al.,2009,9780262033848,3,ALGORITHMS
+The Art of Computer Programming,Donald Knuth,1997,9780201896831,3,ALGORITHMS
+Programming Pearls,Jon Bentley,2000,9780201657883,3,ALGORITHMS
+Code,Charles Petzold,2000,9780735611313,3,CONCEPTUAL
+Domain-Driven Design,Eric Evans,2003,9780321125217,3,CONCEPTUAL

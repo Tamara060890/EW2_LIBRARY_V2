@@ -9,13 +9,12 @@ import java.util.List;
 public interface BookRepository {
     void addBook(Book book);
     boolean deleteBook(String intecID);
-    boolean editBook(String intecID, Book updatedBook);
+    void updateBook(Book updatedBook);
     Book searchBookTitle(String title);
-    Book searchBookAuthor(String author);
+    List<Book> searchBookAuthor(String author);
     Book searchBookISBN(String isbn);
     Book searchBookIntecID(String intecID);
     List<Book> getAllBooks();
-
     void loadBooksFromFile(String fileName);
 
 }
