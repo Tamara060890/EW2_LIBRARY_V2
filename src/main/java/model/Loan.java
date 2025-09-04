@@ -104,14 +104,13 @@ public class Loan {
         String bookTitle = (book != null) ? book.getTitle() : "null";
         String memberName = (member != null) ? member.getName() : "null";
 
-        return "Loan{" +
-                "loanId=" + loanId +
-                ", book=" + bookTitle +
-                ", member=" + memberName +
-                ", loanDate=" + loanDate +
-                ", dueDate=" + dueDate +
-                ", returnDate=" + returnDate +
-                ", status=" + status +
-                '}';
+        return "\n📄 Loan Details:\n" +
+                "🆔 Loan ID: " + loanId + "\n" +
+                "📚 Book: " + bookTitle + "\n" +
+                "👤 Member: " + memberName + "\n" +
+                "📅 Loan Date: " + loanDate + "\n" +
+                "📅 Due Date: " + dueDate + "\n" +
+                "📅 Return Date: " + returnDate + "\n" +
+                "📌 Status: " + status + "\n";
     }
 }

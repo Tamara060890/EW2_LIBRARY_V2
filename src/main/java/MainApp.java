@@ -98,7 +98,7 @@ public class MainApp {
 
 
 
-    // 🏠 Main Menu
+    // 🏠 MENU: MAIN MENU (HOME)
     public static void showMainMenu() {
         boolean running = true;
 
@@ -147,7 +147,7 @@ public class MainApp {
         System.out.println("YOUR CHOICE:");
     }
 
-    // 📖 Library Self Service Menu
+    // 📖 MENU: LIBRARY SELF SERVICE FOR MEMBERS
     public static void showLibrarySelfService() {
         boolean inSelfService = true;
 
@@ -160,6 +160,7 @@ public class MainApp {
             System.out.println("📥 3. Borrow a Book");
             System.out.println("📤 4. Return a Book");
             System.out.println("🔙 0. Back to Main Menu");
+            System.out.println("");
             System.out.println("YOUR CHOICE:");
 
             int choice = getIntInput();
@@ -186,7 +187,7 @@ public class MainApp {
         }
     }
 
-    // 🔍 Search for a Book (Self Service)
+    // 🔍 MENU: SEARCH BOOK (Self Service)
     public static void showSearchBookSelfService() {
         boolean inSearch = true;
 
@@ -221,7 +222,7 @@ public class MainApp {
         }
     }
 
-    // 🛠️ Library Management System Menu
+    // 🛠️ MENU: LIBRARY MANAGEMENT
     public static void showLibraryManagementSystem() {
         boolean inManagement = true;
 
@@ -253,7 +254,7 @@ public class MainApp {
         }
     }
 
-    // 📚 Book Management Menu
+    // 📚 MENU: BOOK MANAGEMENT
     public static void showBookManagement() {
         boolean inBookManagement = true;
 
@@ -295,12 +296,12 @@ public class MainApp {
                     getAllBooks();
                     break;
                 case 7:
-                    inBookManagement = false;
+                    showBookStatistics();
                     break;
                 case 8 :
                     showMemberLoansMenu();
                 case 0:
-                    showLibraryManagementSystem();
+                    inBookManagement = false;
                     break;
                 default:
                     System.out.println("❌ Invalid choice. Please try again.");
@@ -308,18 +309,17 @@ public class MainApp {
         }
     }
 
-    // LOAN MENU
-
+    // MENU: LOAN SERVICE
     private static void showMemberLoansMenu() {
         boolean inLoans = true;
         while (inLoans) {
             System.out.println("\n📚 MEMBER LOANS");
-            System.out.println("=".repeat(40));
-            System.out.println("1) Borrow a Book for Member");
-            System.out.println("2) Return a Loan by ID");
-            System.out.println("3) List Loans of Member");
-            System.out.println("4) Back");
-            System.out.println("YOUR CHOICE:");
+            System.out.println("🟪".repeat(40)); // paarse lijn (optioneel, visueel)
+            System.out.println("1️⃣ Borrow a Book for Member");
+            System.out.println("2️⃣ Return a Loan by ID");
+            System.out.println("3️⃣ List Loans of Member");
+            System.out.println("4️⃣ 🔙 Back");
+            System.out.print("👉 YOUR CHOICE: ");
 
             int c = getIntInput();
             switch (c) {
@@ -336,6 +336,7 @@ public class MainApp {
             }
         }
     }
+
     private static void listLoansByMember() {
         System.out.print("\nMember ID: ");
         try {
@@ -355,7 +356,7 @@ public class MainApp {
     }
 
 
-    // 🔍 SEARCH BOOK MENU (Employee Service)
+    // 🔍 MENU: SEARCH BOOK (Employee Service)
     public static void showSearchBookEmployee() {
         boolean inEmployeeSearch = true;
 
@@ -379,10 +380,10 @@ public class MainApp {
                     searchByTitle();
                     break;
                 case 2:
-                    //searchByAuthor();
+                    searchByAuthor();
                     break;
                 case 3:
-                    //searchByBookType();
+                    searchByBookType();
                     break;
                 case 4:
                     searchByISBN();
@@ -400,7 +401,7 @@ public class MainApp {
     }
 
 
-    // 👥 Member Management Menu
+    // 👥 MENU: MEMBER MANAGEMENT
     private static void showMemberManagement() {
         boolean inMemberManagement = true;
         while (inMemberManagement) {
@@ -439,6 +440,9 @@ public class MainApp {
         }
     }
 
+
+    // LOAN MANAGEMENT METHODS
+
     // View all loans of a given member
     private static void viewBorrowedBooks() {
         System.out.println("\n📚 View Borrowed Books");
@@ -469,18 +473,18 @@ public class MainApp {
         System.out.println("\n📥 Borrow a Book");
         try {
             // Member must exist; service expects the internal numeric ID
-            System.out.print("Member ID (numeric): ");
+            System.out.print("\uD83C\uDD94 Enter Member ID (numeric): ");
             Long memberId = Long.parseLong(scanner.nextLine().trim());
 
             // Provide one of the two identifiers; IntecID is preferred if both are given
-            System.out.print("IntecID (enter to skip): ");
+            System.out.print("\uD83C\uDD94 Enter Intec ID (press enter to skip): ");
             String intecID = scanner.nextLine();
 
-            System.out.print("ISBN (enter to skip): ");
+            System.out.print("\uD83D\uDD22 Enter ISBN (press enter to skip): ");
             String isbn = scanner.nextLine();
 
             // Days with default 14 if empty
-            System.out.print("Days (default 14, enter to use default): ");
+            System.out.print("⏳ Enter number of days you want to keep this book (default 14, enter to use default): ");
             String d = scanner.nextLine();
             int days = (d == null || d.isBlank()) ? 14 : Integer.parseInt(d.trim());
 
@@ -535,6 +539,7 @@ public class MainApp {
         System.out.println("Press enter to continue...");
         scanner.nextLine();
     }
+
     private static void searchByAuthor() {
         System.out.print("\n🖋️ ENTER AUTHOR: ");
         String author = scanner.nextLine();
@@ -566,39 +571,6 @@ public class MainApp {
         System.out.println("Press enter to continue...");
         scanner.nextLine();
     }
-           /* displaySearchResults(books, "auteur: " + author);
-        } catch (Exception e) {
-            System.out.println("❌ Fout bij zoeken: " + e.getMessage());
-        }
-
-        System.out.println("Druk op Enter om verder te gaan...");
-=======
-            displaySearchResults(books, "author: " + author);
-        } catch (Exception e) {
-            System.out.println("❌ Error searching: " + e.getMessage());
-        }
-
-        System.out.println("Press enter to continue...");
-        scanner.nextLine();
-    }
-
-    private static void searchByBookType() {
-        bookService.displayBookTypes(); // Toon alle types
-
-        System.out.print("Enter BookType reference number (1-8): ");
-        int typeRef = getIntInput();
-
-        if (typeRef >= 1 && typeRef <= 8) {
-            List<Book> books = bookService.searchBooksByTypeReference(typeRef);
-            displaySearchResults(books, "BookType reference " + typeRef);
-        } else {
-            System.out.println("❌ Invalid BookType reference. Must be 1-8.");
-        }
-
-        System.out.println("Press enter to continue...");
-
-        scanner.nextLine();
-    }*/
 
     private static void searchByISBN() {
         System.out.print("\n🧾 ENTER ISBN: ");
@@ -616,7 +588,7 @@ public class MainApp {
     }
 
     private static void searchByIntecID() {
-        System.out.print("\n🏷️ ENTER INTEC ID: ");
+        System.out.print("\n🏷\uD83C\uDD94 ENTER INTEC ID: ");
         String intecId = scanner.nextLine();
 
         Book foundBook = bookService.searchBookIntecID(intecId);
@@ -649,6 +621,7 @@ public class MainApp {
             }
         }
     }
+
 
     // BOOK MANAGEMENT METHODS
     private static void addBook() {
@@ -698,7 +671,7 @@ public class MainApp {
     private static void deleteBook() {
         System.out.println("\n❌ DELETE BOOK");
         try {
-            System.out.print("Enter Intec ID: ");
+            System.out.print("\uD83C\uDD94 ENTER INTEC ID: ");
             String IntecID = scanner.nextLine();
 
             boolean deleted = bookService.deleteBook(IntecID);
@@ -722,7 +695,7 @@ public class MainApp {
     private static void updateBook() {
         System.out.println("\n📝 UPDATE BOOK");
         try {
-            System.out.print("Enter Intec ID: ");
+            System.out.print("\uD83C\uDD94 ENTER INTEC ID: ");
             String IntecID = scanner.nextLine();
 
             // Eerst huidige boek ophalen
@@ -735,27 +708,27 @@ public class MainApp {
                 return;
             }
 
-            System.out.println("Current data:");
-            System.out.println("Book title: " + existingBook.getTitle());
-            System.out.println("Author: " + existingBook.getAuthor());
-            System.out.println("Year: " + existingBook.getPublicationYear());
-            System.out.println("ISBN: " + existingBook.getIsbn());
-            System.out.println("Copies: " + existingBook.getAvailableCopies());
-            System.out.println("Type: " + existingBook.getBookType());
+            System.out.println("📚 Current Book Data:");
+            System.out.println("📖 Title: " + existingBook.getTitle());
+            System.out.println("✍️ Author: " + existingBook.getAuthor());
+            System.out.println("📅 Year: " + existingBook.getPublicationYear());
+            System.out.println("🔢 ISBN: " + existingBook.getIsbn());
+            System.out.println("📦 Copies Available: " + existingBook.getAvailableCopies());
+            System.out.println("📗 Type: " + existingBook.getBookType());
 
-            System.out.print("New Book title (press enter to keep): ");
+            System.out.print("Update Book title (press enter for author): ");
             String newTitle = scanner.nextLine();
             if (newTitle.trim().isEmpty()) {
                 newTitle = existingBook.getTitle();
             }
 
-            System.out.print("New author (press enter to keep): ");
+            System.out.print("Update author (press enter for publication year): ");
             String newAuthor = scanner.nextLine();
             if (newAuthor.trim().isEmpty()) {
                 newAuthor = existingBook.getAuthor();
             }
 
-            System.out.print("New year (press enter to keep): ");
+            System.out.print("Update publication year (press enter for ISBN): ");
             String yearInput = scanner.nextLine();
             int newYear = existingBook.getPublicationYear();
             if (!yearInput.trim().isEmpty()) {
@@ -766,13 +739,13 @@ public class MainApp {
                 }
             }
 
-            System.out.print("New ISBN (press enter to keep): ");
+            System.out.print("Update ISBN (press enter for available copies): ");
             String newIsbn = scanner.nextLine();
             if (newIsbn.trim().isEmpty()) {
                 newIsbn = existingBook.getIsbn();
             }
 
-            System.out.print("New available copies (press enter to keep): ");
+            System.out.print("Update available copies (press enter for next): ");
             String copiesInput = scanner.nextLine();
             int newCopies = existingBook.getAvailableCopies();
             if (!copiesInput.trim().isEmpty()) {
@@ -808,19 +781,17 @@ public class MainApp {
 
     private static void uploadBooksCSV() {
         System.out.println("\n📤 Add books via CSV...");
-        System.out.print("📤 Enter file name (books_inventory2.csv): ");
+        System.out.print("📤 Enter file name: books_inventoryX.csv: ");
         String fileName = scanner.nextLine();
         bookService.loadBooksFromFile(fileName);
         System.out.println("✅ CSV data added to Inventory.\n");
 
-
         // Check uploaded books
-        System.out.print("Do you want to review the inventory after upload? (Yes/No): ");
-        String antwoord = scanner.nextLine();
-        if (antwoord.equalsIgnoreCase("Yes")) {
+        System.out.print("\uD83D\uDCE6 Do you want to review the inventory after upload? (Yes/No): ");
+        String answer = scanner.nextLine().trim().toLowerCase();
+        if (answer.equals("yes") || answer.equals("y")) {
             getAllBooks();
         }
-
         scanner.nextLine();
     }
 
@@ -869,100 +840,101 @@ public class MainApp {
     }
 
     private static void deleteMember() {
-        System.out.print("\nVoer Member ID in om te verwijderen: ");
+        System.out.print("\nENTER MEMBER ID: ");
         Long id = Long.parseLong(scanner.nextLine());
 
         try {
-            // Eerst lid ophalen om de gegevens te tonen
+            // Get member data
             Member member = memberService.findMemberById(id);
 
-            // Toon lid info
-            System.out.println("⚠️ Je staat op het punt het volgende lid te verwijderen:");
-            System.out.println("ID: " + member.getMemberId());
-            System.out.println("Naam: " + member.getName());
-            System.out.println("Email: " + member.getEmail());
-            System.out.println("Telefoon: " + member.getPhoneNumber());
-            System.out.println("Membership Number: " + member.getMembershipNumber());
-            System.out.println("Membership Date: " + member.getMembershipDate());
+            // Show member data
+            System.out.println("⚠️ You are about to delete the following member:");
+            System.out.println("🆔 ID: " + member.getMemberId());
+            System.out.println("👤 Name: " + member.getName());
+            System.out.println("📧 Email: " + member.getEmail());
+            System.out.println("📞 Phone: " + member.getPhoneNumber());
+            System.out.println("🪪 Membership Number: " + member.getMembershipNumber());
+            System.out.println("📅 Membership Date: " + member.getMembershipDate());
 
-            // Bevestiging vragen
-            System.out.print("Weet je zeker dat je dit lid wilt verwijderen? (ja/nee): ");
+            // Ask for confirmation
+            System.out.print("❓ Are you sure you want to delete this member? (yes/no): ");
             String confirm = scanner.nextLine();
-            if (confirm.equalsIgnoreCase("ja")) {
+            if (confirm.equalsIgnoreCase("yes")) {
                 memberService.removeMember(id);
-                System.out.println("✅ Lid verwijderd: " + member.getName());
+                System.out.println("✅ Member deleted: " + member.getName());
             } else {
-                System.out.println("❌ Verwijderen geannuleerd.");
+                System.out.println("❌ Deletion cancelled.");
             }
         } catch (MemberService.MemberNotFoundException e) {
-            System.out.println("❌ Fout: " + e.getMessage());
+            System.out.println("❌ Error: " + e.getMessage());
         }
 
-        System.out.println("Druk op Enter om verder te gaan...");
+        System.out.println("⏎ Press Enter to continue...");
         scanner.nextLine();
+
     }
 
     private static void editMemberDetails() {
-        System.out.print("\nVoer Member ID in om te bewerken: ");
+        System.out.print("\nENTER MEMBER ID: ");
         Long id = Long.parseLong(scanner.nextLine());
 
         try {
             Member member = memberService.findMemberById(id);
 
-            System.out.print("Nieuwe naam (" + member.getName() + "): ");
+            System.out.print("Update name (" + member.getName() + "): ");
             String name = scanner.nextLine();
             if (!name.isBlank()) member.setName(name);
 
-            System.out.print("Nieuw telefoonnummer (" + member.getPhoneNumber() + "): ");
+            System.out.print("Update phone number (" + member.getPhoneNumber() + "): ");
             String phone = scanner.nextLine();
             if (!phone.isBlank()) member.setPhoneNumber(phone);
 
-            System.out.print("Nieuw email (" + member.getEmail() + "): ");
+            System.out.print("Update email (" + member.getEmail() + "): ");
             String email = scanner.nextLine();
             if (!email.isBlank()) member.setEmail(email);
 
             // Opslaan via updateMember
             memberService.updateMember(member);
 
-            System.out.println("✅ Lidgegevens bijgewerkt: " + member.getName());
+            System.out.println("✅ Updated member data: " + member.getName());
         } catch (MemberService.MemberNotFoundException e) {
             System.out.println("❌ Fout: " + e.getMessage());
         } catch (IllegalArgumentException e) {
             System.out.println("❌ Ongeldige invoer: " + e.getMessage());
         }
 
-        System.out.println("Druk op Enter om verder te gaan...");
+        System.out.println("Press enter to continue...");
         scanner.nextLine();
     }
 
     private static void viewMemberProfile() {
-        System.out.print("\nVoer Member ID in om profiel te bekijken: ");
+        System.out.print("\nENTER MEMBER ID: ");
         Long id = Long.parseLong(scanner.nextLine());
         try {
             Member member = memberService.findMemberById(id);
-            System.out.println("Lidprofiel:\n" +
-                    "ID: " + member.getMemberId() + "\n" +
-                    "Naam: " + member.getName() + "\n" +
-                    "Email: " + member.getEmail() + "\n" +
-                    "Telefoon: " + member.getPhoneNumber() + "\n" +
-                    "Membership Number: " + member.getMembershipNumber() + "\n" +
-                    "Membership Date: " + member.getMembershipDate());
+            System.out.println("👤 Member Profile:\n" +
+                    "🆔 ID: " + member.getMemberId() + "\n" +
+                    "👤 Name: " + member.getName() + "\n" +
+                    "📧 Email: " + member.getEmail() + "\n" +
+                    "📞 Phone: " + member.getPhoneNumber() + "\n" +
+                    "🪪 Membership Number: " + member.getMembershipNumber() + "\n" +
+                    "📅 Membership Date: " + member.getMembershipDate());
         } catch (MemberService.MemberNotFoundException e) {
             System.out.println("❌ Fout: " + e.getMessage());
         }
-        System.out.println("Druk op Enter om verder te gaan...");
+        System.out.println("Press enter to continue...");
         scanner.nextLine();
     }
 
     private static void showAllMembers() {
         List<Member> members = memberService.showAllMembers();
 
-        // Sorteer op memberId oplopend
+        // Sort: memberId ascending (klein naar groot)
         members.sort((m1, m2) -> m1.getMemberId().compareTo(m2.getMemberId()));
 
-        System.out.println("\n📜 Alle leden (gesorteerd op ID):");
-        System.out.println("ID | Naam | Email | Telefoon | Membership Number");
-        System.out.println("---------------------------------------------------");
+        System.out.println("\n📜 All members (sorted by ID):");
+        System.out.println("🆔 ID | 👤 Name | 📧 Email | 📞 Phone | 🪪 Membership Number");
+        System.out.println("-------------------------------------------------------------");
         for (Member m : members) {
             System.out.println(
                     m.getMemberId() + " | " +
@@ -972,24 +944,24 @@ public class MainApp {
                             m.getMembershipNumber()
             );
         }
-        System.out.println("Druk op Enter om verder te gaan...");
+        System.out.println("⏎ Press Enter to continue...");
         scanner.nextLine();
     }
 
     private static void searchMemberByEmail() {
-        System.out.print("\nVoer e-mail in om te zoeken: ");
+        System.out.print("\nENTER EMAIL: ");
         String email = scanner.nextLine();
         try {
             Member member = memberService.searchMemberByEmail(email);
-            System.out.println("Gevonden lid:\n" +
-                    "ID: " + member.getMemberId() + "\n" +
-                    "Naam: " + member.getName() + "\n" +
-                    "Email: " + member.getEmail() + "\n" +
-                    "Telefoon: " + member.getPhoneNumber());
+            System.out.println("🎉 Member found:\n" +
+                    "🆔 ID: " + member.getMemberId() + "\n" +
+                    "👤 Name: " + member.getName() + "\n" +
+                    "📧 Email: " + member.getEmail() + "\n" +
+                    "📞 Phone: " + member.getPhoneNumber());
         } catch (MemberService.MemberNotFoundException e) {
-            System.out.println("❌ Fout: " + e.getMessage());
+            System.out.println("❌ Error: " + e.getMessage());
         }
-        System.out.println("Druk op Enter om verder te gaan...");
+        System.out.println("Press enter to continue...");
         scanner.nextLine();
     }
 }
