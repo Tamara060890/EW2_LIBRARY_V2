@@ -24,17 +24,30 @@ package "model" {
     }
 
     class Member {
-        -Long memberId
-        -String name
-        -String email
-
-        -String membershipNumber
-        -LocalDate membershipDate
-        +Member()
-        +getId(): Long
-        +getName(): String
-        +getEmail(): String
-        +getMembershipNumber(): String
+         - Long memberId
+            - String name
+            - int startYear
+            - String phoneNumber
+            - String email
+            - String membershipNumber
+            - LocalDate membershipDate
+            + Member()
+            + Member(Long memberId, String membershipNumber, String name, int startYear,
+                     String phoneNumber, String email, LocalDate membershipDate)
+            + getMemberId(): Long
+            + setMemberId(Long memberId): void
+            + getName(): String
+            + setName(String name): void
+            + getStartYear(): int
+            + setStartYear(int startYear): void
+            + getPhoneNumber(): String
+            + setPhoneNumber(String phoneNumber): void
+            + getEmail(): String
+            + setEmail(String email): void
+            + getMembershipNumber(): String
+            + setMembershipNumber(String membershipNumber): void
+            + getMembershipDate(): LocalDate
+            + setMembershipDate(LocalDate membershipDate): void
     }
 
     class Loan {

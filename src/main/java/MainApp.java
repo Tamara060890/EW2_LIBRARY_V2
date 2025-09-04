@@ -71,14 +71,28 @@ public class MainApp {
         // loanService = new LoanService(loanRepository);
     }
 
+    // Authentication methode to enter Library Self Service
+    private static boolean authenticateMember() {
+        System.out.print("🔑 Enter your email to login: ");
+        String email = scanner.nextLine();
 
+        try {
+            Member member = memberService.searchMemberByEmail(email); // controleert of de email in CSV staat
+            System.out.println("✅ Welcome, " + member.getName() + " (ID: " + member.getMemberId() + ")!");
+            return true; // login succesvol
+        } catch (MemberService.MemberNotFoundException e) {
+            System.out.println("❌ Email not found. Try again.");
+            return false; // login mislukt
+        }
+    }
 
     // Authentication method to enter Library Management
-    private static boolean authenticate() {
+    private static boolean authenticateManager() {
         System.out.print("🔐 Add login code to access Library Management: ");
         String password = scanner.nextLine();
         return password.equals("admin123"); // Hard coded password for demo purposes, must be implemented more secure in the next quality phase.
     }
+
 
 
     // 🏠 Main Menu
@@ -96,10 +110,14 @@ public class MainApp {
 
             switch (choice) {
                 case 1:
-                    showLibrarySelfService();
+                    boolean loggedIn = false;
+                    while (!loggedIn) {
+                        loggedIn = authenticateMember(); // vraagt om email tot het correct is
+                    }
+                    showLibrarySelfService(); // laat Self Service-menu zien na succesvolle login
                     break;
                 case 2:
-                    if (authenticate()) {
+                    if (authenticateManager()) {
                     showLibraryManagementSystem();
                 } else {
                     System.out.println("❌ Invalid login code. Access refused.");

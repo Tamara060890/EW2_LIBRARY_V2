@@ -1,9 +1,6 @@
-title,author,publicationYear,isbn,availableCopies,bookType
-Clean Code,Robert C. Martin,2008,9780132350884,3,CONCEPTUAL
-The Pragmatic Programmer,Andrew Hunt & David Thomas,1999,9780201616224,3,CONCEPTUAL
-Code Complete,Steve McConnell,2004,9780735619678,3,CONCEPTUAL
-Refactoring,Martin Fowler,2019,9780134757599,3,CONCEPTUAL
-Design Patterns,Erich Gamma et al.,1994,9780201633610,3,CONCEPTUAL
-
-
-
+intecID,title,author,publicationYear,isbn,availableCopies,bookType
+INTEC005,Design Patterns,Erich Gamma et al.,1994,9780201633610,3,CONCEPTUAL
+INTEC003,Code Complete,Steve McConnell,2004,9780735619678,3,CONCEPTUAL
+INTEC004,Refactoring,Martin Fowler,2019,9780134757599,3,CONCEPTUAL
+INTEC001,Clean Code,Robert C. Martin,2008,9780132350884,3,CONCEPTUAL
+INTEC002,The Pragmatic Programmer,Andrew Hunt & David Thomas,1999,9780201616224,3,CONCEPTUAL
