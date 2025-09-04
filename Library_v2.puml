@@ -99,11 +99,11 @@ package "repository" {
     }
 
     interface MemberRepository {
-        +save(Member): Member
-        +findById(Long): Optional<Member>
-        +findByEmail(String): Optional<Member>
-        +findAll(): List<Member>
-        +delete(Long): void
+         + saveMember(member: Member): Member
+         + findByMemberId(memberId: Long): Optional<Member>
+         + findByEmail(email: String): Optional<Member>
+         + findAllMembers(): List<Member>
+         + deleteMember(memberId: Long): boolean
     }
 
     interface LoanRepository {
@@ -127,12 +127,16 @@ package "repository" {
         }
 
         class MemberRepositoryImpl {
-            -List<Member> members
-            +save(Member): Member
-            +findById(Long): Optional<Member>
-            +findByEmail(String): Optional<Member>
-            +findAll(): List<Member>
-            +delete(Long): void
+            - members: List<Member>
+            - csvFile: String
+            + MemberRepositoryImpl()
+            + saveMember(member: Member): Member
+            + findByMemberId(memberId: Long): Optional<Member>
+            + findByEmail(email: String): Optional<Member>
+            + findAllMembers(): List<Member>
+            + deleteMember(memberId: Long): boolean
+            - loadFromCSV(): void
+            - saveToCSV(): void
         }
 
         class LoanRepositoryImpl {
@@ -162,15 +166,17 @@ package "service" {
     }
 
     class MemberService {
-        -MemberRepository memberRepository
-        +MemberService(MemberRepository)
-        +registerMember(Member): Member
-        +findMemberById(Long): Member
-        +findMemberByEmail(String): Member
-        +getAllMembers(): List<Member>
-        +updateMember(Member): Member
-        +deleteMember(Long): void
+        - memberRepository: MemberRepository
+        + MemberService(memberRepository: MemberRepository)
+        + addMember(member: Member): Member
+        + updateMember(member: Member): Member
+        + removeMember(id: Long): void
+        + searchMemberByEmail(email: String): Member
+        + findMemberById(id: Long): Member
+        + showAllMembers(): List<Member>
+        - validateMember(member: Member): void
     }
+
 
     class LoanService {
         -LoanRepository loanRepository

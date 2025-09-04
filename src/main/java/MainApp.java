@@ -47,7 +47,7 @@ public class MainApp {
         initializeServices();
 
 
-        // Repository en service initialiseren
+        // 2. Repository en service initialiseren
         MemberRepository memberRepo = new repository.MemberRepositoryImpl();
         memberService = new service.MemberService(memberRepo);
 
