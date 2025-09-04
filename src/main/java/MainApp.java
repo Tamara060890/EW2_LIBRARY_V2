@@ -7,17 +7,15 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Scanner;
 import java.util.List;
+import model.*
+import repository.*;
+import service.LoanService;
 
-// TODO: BookService Imports
-import model.Book;
-import model.BookType;
 
 // import your.package.service.BookService;
 import model.Member;
 import repository.MemberRepository;
 import service.BookService;
-import repository.BookRepository;
-import repository.BookRepositoryImpl;
 
 // TODO: MemberService Imports
 
@@ -31,10 +29,14 @@ public class MainApp {
     // Service instanties - één keer aanmaken bij opstarten
     private static BookService bookService;
     private static MemberService memberService;  // Voor later
-    // private static LoanService loanService;      // Voor later
+    private static LoanService loanService;
+
+
 
 
     public static void main(String[] args) {
+
+    //Initialize all services with dependencies
 
         //Eerst services klaarzetten, zodat alles beschikbaar is.
         //Dan CSV inladen, zodat je zeker weet dat bookService klaar is.
@@ -57,20 +59,20 @@ public class MainApp {
     }
 
     // Initialize all services with dependencies
+  
     private static void initializeServices() {
         // BookRepository instance
         BookRepository bookRepository = new BookRepositoryImpl();
-
-        // BookService instance with dependency injection
         bookService = new BookService(bookRepository);
 
-        // MemberRepository memberRepository = new MemberRepositoryImpl();
-        // memberService = new MemberService(memberRepository);
+        // MemberRepository + MemberService
+        MemberRepository memberRepository = new MemberRepositoryImpl();
+        memberService = new MemberService(memberRepository);
 
-        // LoanRepository loanRepository = new LoanRepositoryImpl();
-        // loanService = new LoanService(loanRepository);
+        // Loan
+        LoanRepository loanRepository = new LoanRepositoryImpl();
+        loanService = new LoanService(loanRepository, bookRepository, memberRepository);
     }
-
 
 
     // Authentication method to enter Library Management
@@ -186,7 +188,7 @@ public class MainApp {
                     searchByTitle();
                     break;
                 case 2:
-                    searchByAuthor();
+                    //searchByAuthor();
                     break;
                 case 3:
                     searchByISBN();
@@ -247,6 +249,7 @@ public class MainApp {
             System.out.println("📤 5. Upload Books via CSV");
             System.out.println("🔍 6. Show all Books");
             System.out.println("🔍 7. Show Book Statistics");
+            System.out.println("📚 8. Loans for a Member");
             System.out.println("🔙 0. Back to Library Management System");
             System.out.println("");
             System.out.println("YOUR CHOICE:");
@@ -273,14 +276,60 @@ public class MainApp {
                     getAllBooks();
                     break;
                 case 7:
-                    showBookStatistics();
-                    break;
-                case 0:
                     inBookManagement = false;
                     break;
+                case 8 :
+                    showMemberLoansMenu();
+
                 default:
                     System.out.println("❌ Invalid choice. Please try again.");
             }
+        }
+    }
+
+    // LOAN MENU
+
+    private static void showMemberLoansMenu() {
+        boolean inLoans = true;
+        while (inLoans) {
+            System.out.println("\n📚 MEMBER LOANS");
+            System.out.println("=".repeat(40));
+            System.out.println("1) Borrow a Book for Member");
+            System.out.println("2) Return a Loan by ID");
+            System.out.println("3) List Loans of Member");
+            System.out.println("4) Back");
+            System.out.println("YOUR CHOICE:");
+
+            int c = getIntInput();
+            switch (c) {
+                case 1 :
+                    borrowBook();        // reuses existing method
+                case 2 :
+                    returnBook();        // reuses existing method
+                case 3 :
+                    listLoansByMember(); // new method below
+                case 4 :
+                    inLoans = false;
+                default :
+                    System.out.println("❌ Invalid choice. Please try again.");
+            }
+        }
+    }
+    private static void listLoansByMember() {
+        System.out.print("\nMember ID: ");
+        try {
+            Long memberId = Long.parseLong(scanner.nextLine().trim());
+            List<Loan> list = loanService.getLoansByMember(memberId);
+            if (list == null || list.isEmpty()) {
+                System.out.println("No loans for this member.");
+                return;
+            }
+            System.out.println("Loans:");
+            for (Loan l : list) {
+                System.out.println(" - " + l);
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("❌ Invalid Member ID.");
         }
     }
 
@@ -408,13 +457,44 @@ public class MainApp {
         System.out.println("Press enter to continue...");
         scanner.nextLine();
     }
-
-    private static void searchByAuthor() {
+    /*private static void searchByAuthor() {
         System.out.print("\n🖋️ ENTER AUTHOR: ");
         String author = scanner.nextLine();
 
         try {
             List<Book> books = bookService.searchBookAuthor(author);
+            displaySearchResults(books, "author: " + author);
+        } catch (Exception e) {
+            System.out.println("❌ Error searching: " + e.getMessage());
+        }
+
+        System.out.println("Press enter to continue...");
+        scanner.nextLine();
+    }
+
+    private static void searchByBookType() {
+        bookService.displayBookTypes(); // Show all types
+
+        System.out.print("Enter BookType reference number (1-8): ");
+        int typeRef = getIntInput();
+
+        if (typeRef >= 1 && typeRef <= 8) {
+            List<Book> books = bookService.searchBooksByTypeReference(typeRef);
+            displaySearchResults(books, "BookType reference " + typeRef);
+        } else {
+            System.out.println("❌ Invalid BookType reference. Must be 1-8.");
+        }
+
+        System.out.println("Press enter to continue...");
+        scanner.nextLine();
+    }*/
+            displaySearchResults(books, "auteur: " + author);
+        } catch (Exception e) {
+            System.out.println("❌ Fout bij zoeken: " + e.getMessage());
+        }
+
+        System.out.println("Druk op Enter om verder te gaan...");
+=======
             displaySearchResults(books, "author: " + author);
         } catch (Exception e) {
             System.out.println("❌ Error searching: " + e.getMessage());
@@ -438,8 +518,9 @@ public class MainApp {
         }
 
         System.out.println("Press enter to continue...");
+
         scanner.nextLine();
-    }
+    }*/
 
     private static void searchByISBN() {
         System.out.print("\n🧾 ENTER ISBN: ");
@@ -509,7 +590,6 @@ public class MainApp {
 
         System.out.print("\uD83D\uDCDA Available copies: ");
         int copies = getIntInput();
-
         System.out.print("Booktype: \n" +
                 "    1\uFE0F⃣ TUTORIAL(1),           // Practical guides and how-to books\n" +
                 "    2\uFE0F⃣ REFERENCE(2),          // Reference works and documentation\n" +
@@ -533,7 +613,6 @@ public class MainApp {
 
         System.out.println("✅ NEW BOOK!");
         System.out.println("\uD83C\uDD94 Book ID: " + newbook.getIntecID());
-
         System.out.println("Press enter to continue...");
         scanner.nextLine();
     }
@@ -639,7 +718,6 @@ public class MainApp {
 
             // BookService aanroepen om boek te updaten
             bookService.updateBook(updatedBook);
-
             System.out.println("✅ Book successfully updated!");
 
         } catch (Exception e) {
@@ -656,6 +734,7 @@ public class MainApp {
         String fileName = scanner.nextLine();
         bookService.loadBooksFromFile(fileName);
         System.out.println("✅ CSV data added to Inventory.\n");
+
 
         // Check uploaded books
         System.out.print("Do you want to review the inventory after upload? (Yes/No): ");
