@@ -606,7 +606,7 @@ public class MainApp {
             );
 
             // BookService aanroepen om boek te updaten
-            bookService.updateBook(updatedBook);
+           // bookService.updateBook(updatedBook);
 
             System.out.println("✅ Book successfully updated!");
 
