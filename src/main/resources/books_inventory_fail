@@ -1,0 +1,6 @@
+title,author,publicationYear,isbn,availableCopies,bookType
+Refactoring,Martin Fowler,notayear,9780134757599,3,CONCEPTUAL
+Building Microservices,Sam Newman,2015,9781491950359,three,TRENDS_FUTURE
+Clean Code,Robert C. Martin,2008,9780132350884,3,UNKNOWN_TYPE
+Incomplete Book,,2020,,2,CONCEPTUAL
+,No Title,2022,9780000000000,1,CONCEPTUAL

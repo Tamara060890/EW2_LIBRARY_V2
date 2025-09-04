@@ -19,4 +19,16 @@ public enum BookType {
     public int getReferenceNumber() {
         return referenceNumber;
     }
+
+
+    public static BookType fromNumber(int number) {
+        for (BookType type : BookType.values()) {
+            if (type.getReferenceNumber() == number) {
+                return type;
+            }
+        }
+        throw new IllegalArgumentException("Invalid book type number: " + number);
+    }
+
+
 }
