@@ -74,7 +74,7 @@ public class MainApp {
 
 
     // Authentication method to enter Library Management
-    private static boolean authenticate() {
+    private static boolean authenticateManager() {
         System.out.print("🔐 Add login code to access Library Management: ");
         String password = scanner.nextLine();
         return password.equals("admin123"); // Hard coded password for demo purposes, must be implemented more secure in the next quality phase.
@@ -99,7 +99,7 @@ public class MainApp {
                     showLibrarySelfService();
                     break;
                 case 2:
-                    if (authenticate()) {
+                    if (authenticateManager()) {
                     showLibraryManagementSystem();
                 } else {
                     System.out.println("❌ Invalid login code. Access refused.");
