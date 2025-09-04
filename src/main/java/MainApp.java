@@ -83,7 +83,7 @@ public class MainApp {
                     showLibraryManagementSystem();
                     break;
                 case 3:
-                    System.out.println("\n👋 Bedankt voor het gebruik van het Library System!");
+                    System.out.println("\n👋 Thank you for visiting the Intec Library!");
                     running = false;
                     break;
                 default:
@@ -97,7 +97,7 @@ public class MainApp {
         System.out.println("=".repeat(40));
         System.out.println("📖 1. Library Self Service");
         System.out.println("🛠️ 2. Library Management");
-        System.out.println("🚪 3. Exit");
+        System.out.println("🚪 0. Exit");
         System.out.println("YOUR CHOICE:");
     }
 
@@ -113,7 +113,7 @@ public class MainApp {
             System.out.println("📚 2. View Borrowed Books");
             System.out.println("📥 3. Borrow a Book");
             System.out.println("📤 4. Return a Book");
-            System.out.println("🔙 5. Back to Main Menu");
+            System.out.println("🔙 0. Back to Main Menu");
             System.out.println("YOUR CHOICE:");
 
             int choice = getIntInput();
@@ -131,7 +131,7 @@ public class MainApp {
                 case 4:
                     returnBook();
                     break;
-                case 5:
+                case 0:
                     inSelfService = false;
                     break;
                 default:
@@ -151,7 +151,7 @@ public class MainApp {
             System.out.println("🔎 1. By Title");
             System.out.println("🖋️ 2. By Author");
             System.out.println("🧾 3. By ISBN");
-            System.out.println("🔙 4. Back to Library Self Service");
+            System.out.println("🔙 0. Back to Library Self Service");
             System.out.println("YOUR CHOICE:");
 
             int choice = getIntInput();
@@ -161,12 +161,12 @@ public class MainApp {
                     searchByTitle();
                     break;
                 case 2:
-                    //searchByAuthor();
+                    searchByAuthor();
                     break;
                 case 3:
                     searchByISBN();
                     break;
-                case 4:
+                case 0:
                     inSearch = false;
                     break;
                 default:
@@ -185,7 +185,7 @@ public class MainApp {
             System.out.println("=".repeat(40));
             System.out.println("📚 1. Book Management");
             System.out.println("👥 2. Member Management");
-            System.out.println("🔙 3. Back to Main Menu");
+            System.out.println("🔙 0. Back to Main Menu");
             System.out.println("YOUR CHOICE:");
 
             int choice = getIntInput();
@@ -197,7 +197,7 @@ public class MainApp {
                 case 2:
                     showMemberManagement();
                     break;
-                case 3:
+                case 0:
                     inManagement = false;
                     break;
                 default:
@@ -214,37 +214,41 @@ public class MainApp {
             System.out.println("\n");
             System.out.println("📚 BOOK MANAGEMENT (Employee Service)");
             System.out.println("=".repeat(40));
-            System.out.println("➕ 1. Add a Book");
-            System.out.println("❌ 2. Delete a Book");
-            System.out.println("📝 3. Edit a Book");
-            System.out.println("📤 4. Upload Books via CSV");
-            System.out.println("🔍 5. Search Book");
+            System.out.println("🔍 1. Search Book");
+            System.out.println("➕ 2. Add a Book");
+            System.out.println("❌ 3. Delete a Book");
+            System.out.println("📝 4. Update a Book");
+            System.out.println("📤 5. Upload Books via CSV");
             System.out.println("🔍 6. Show all Books");
-            System.out.println("🔙 7. Back to Library Management System");
+            System.out.println("🔍 7. Show Book Statistics");
+            System.out.println("🔙 0. Back to Library Management System");
             System.out.println("YOUR CHOICE:");
 
             int choice = getIntInput();
 
             switch (choice) {
                 case 1:
-                    addBook();
+                    showSearchBookEmployee();
                     break;
                 case 2:
-                    deleteBook();
+                    addBook();
                     break;
                 case 3:
-                    updateBook();
+                    deleteBook();
                     break;
                 case 4:
-                    uploadBooksCSV();
+                    updateBook();
                     break;
                 case 5:
-                    showSearchBookEmployee();
+                    uploadBooksCSV();
                     break;
                 case 6:
                     getAllBooks();
                     break;
                 case 7:
+                    showBookStatistics();
+                    break;
+                case 0:
                     inBookManagement = false;
                     break;
                 default:
@@ -264,9 +268,10 @@ public class MainApp {
             System.out.println("=".repeat(40));
             System.out.println("🔎 1. By Title");
             System.out.println("🖋️ 2. By Author");
-            System.out.println("🧾 3. By ISBN");
-            System.out.println("🏷️ 4. By Intec ID");
-            System.out.println("🔙 5. Back to Book Management");
+            System.out.println("🏷️ 3. By Type");
+            System.out.println("🧾 4. By ISBN");
+            System.out.println("🏷️ 5. By Intec ID");
+            System.out.println("🔙 0. Back to Book Management");
             System.out.println("YOUR CHOICE:");
 
             int choice = getIntInput();
@@ -279,12 +284,15 @@ public class MainApp {
                     //searchByAuthor();
                     break;
                 case 3:
-                    searchByISBN();
+                    //searchByBookType();
                     break;
                 case 4:
-                    searchByIntecID();
+                    searchByISBN();
                     break;
                 case 5:
+                    searchByIntecID();
+                    break;
+                case 0:
                     inEmployeeSearch = false;
                     break;
                 default:
@@ -306,7 +314,7 @@ public class MainApp {
             System.out.println("👤 4. View Member Profile");
             System.out.println("📜 5. Show All Members");
             System.out.println("🔍 6. Search Member by Email");
-            System.out.println("🔙 7. Back to Library Management System");
+            System.out.println("🔙 0. Back to Library Management System");
             System.out.println("YOUR CHOICE:");
             int choice = getIntInput();
 
@@ -317,7 +325,7 @@ public class MainApp {
                 case 4 -> viewMemberProfile();
                 case 5 -> showAllMembers();
                 case 6 -> searchMemberByEmail();
-                case 7 -> inMemberManagement = false;
+                case 0 -> inMemberManagement = false;
                 default -> System.out.println("❌ Invalid choice. Please try again.");
             }
         }
@@ -372,20 +380,37 @@ public class MainApp {
         scanner.nextLine();
     }
 
-    /*private static void searchByAuthor() {
+    private static void searchByAuthor() {
         System.out.print("\n🖋️ ENTER AUTHOR: ");
         String author = scanner.nextLine();
 
         try {
             List<Book> books = bookService.searchBookAuthor(author);
-            displaySearchResults(books, "auteur: " + author);
+            displaySearchResults(books, "author: " + author);
         } catch (Exception e) {
-            System.out.println("❌ Fout bij zoeken: " + e.getMessage());
+            System.out.println("❌ Error searching: " + e.getMessage());
         }
 
-        System.out.println("Druk op Enter om verder te gaan...");
+        System.out.println("Press enter to continue...");
         scanner.nextLine();
-    }*/
+    }
+
+    private static void searchByBookType() {
+        bookService.displayBookTypes(); // Toon alle types
+
+        System.out.print("Enter BookType reference number (1-8): ");
+        int typeRef = getIntInput();
+
+        if (typeRef >= 1 && typeRef <= 8) {
+            List<Book> books = bookService.searchBooksByTypeReference(typeRef);
+            displaySearchResults(books, "BookType reference " + typeRef);
+        } else {
+            System.out.println("❌ Invalid BookType reference. Must be 1-8.");
+        }
+
+        System.out.println("Press enter to continue...");
+        scanner.nextLine();
+    }
 
     private static void searchByISBN() {
         System.out.print("\n🧾 ENTER ISBN: ");
@@ -403,14 +428,39 @@ public class MainApp {
     }
 
     private static void searchByIntecID() {
-        System.out.print("\n🏷️ Voer het Intec ID in: ");
+        System.out.print("\n🏷️ ENTER INTEC ID: ");
         String intecId = scanner.nextLine();
-        System.out.println("Zoeken naar boek met Intec ID: " + intecId);
-        System.out.println("Deze functionaliteit wordt nog geïmplementeerd.");
-        System.out.println("Druk op Enter om verder te gaan...");
+
+        Book foundBook = bookService.searchBookIntecID(intecId);
+        if (foundBook != null) {
+            System.out.println("📘 Book found: " + foundBook);
+        } else {
+            System.out.println("❌ No books found with this Intec ID.");
+        }
+
+        System.out.println("Press enter to continue...");
         scanner.nextLine();
     }
 
+    private static void showBookStatistics() {
+        bookService.showBookStatistics();
+        System.out.println("Press enter to continue...");
+        scanner.nextLine();
+    }
+
+    // Helper method to show search results
+    private static void displaySearchResults(List<Book> books, String searchCriteria) {
+        if (books.isEmpty()) {
+            System.out.println("❌ No books found for " + searchCriteria);
+        } else {
+            System.out.println("📚 Books found for " + searchCriteria + ":");
+            System.out.println("=".repeat(50));
+            for (Book book : books) {
+                System.out.println(book);
+                System.out.println("-----------------------------");
+            }
+        }
+    }
 
     // BOOK MANAGEMENT METHODS
     private static void addBook() {
