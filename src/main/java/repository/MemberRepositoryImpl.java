@@ -18,9 +18,13 @@ public class MemberRepositoryImpl implements MemberRepository {
     }
 
     // ================= Repository-methoden =================
-    @Override
     public Member saveMember(Member member) {
-        members.removeIf(m -> m.getMemberId().equals(member.getMemberId()));
+        if (member.getMemberId() == null) {
+            long newId = members.stream().mapToLong(Member::getMemberId).max().orElse(0) + 1;
+            member.setMemberId(newId);
+        } else {
+            members.removeIf(m -> m.getMemberId().equals(member.getMemberId()));
+        }
         members.add(member);
         saveToCSV();
         return member;
@@ -50,13 +54,12 @@ public class MemberRepositoryImpl implements MemberRepository {
 
     // ================= CSV =================
     private void loadFromCSV() {
-        File file = new File(System.getProperty("user.home"), csvFileName);
-        if (!file.exists()) {
-            System.out.println("ℹ️ CSV bestand bestaat nog niet: " + file.getAbsolutePath());
-            return;
-        }
-
-        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+        try (InputStream is = getClass().getClassLoader().getResourceAsStream(csvFileName)) {
+            if (is == null) {
+                System.out.println("❌ CSV bestand niet gevonden: " + csvFileName);
+                return;
+            }
+            BufferedReader br = new BufferedReader(new InputStreamReader(is));
             String line;
             boolean firstLine = true;
             while ((line = br.readLine()) != null) {
@@ -81,7 +84,8 @@ public class MemberRepositoryImpl implements MemberRepository {
     }
 
     private void saveToCSV() {
-        File file = new File(System.getProperty("user.home"), csvFileName);
+        // Sla terug naar target/resources bij runtime kan lastig zijn, daarom pad in project gebruiken
+        File file = new File("src/main/resources/" + csvFileName);
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(file))) {
             bw.write("memberId,membershipNumber,name,startYear,phoneNumber,email,membershipDate\n");
             for (Member m : members) {
@@ -94,7 +98,6 @@ public class MemberRepositoryImpl implements MemberRepository {
                         m.getEmail(),
                         m.getMembershipDate()));
             }
-            System.out.println("✅ Members opgeslagen naar CSV: " + file.getAbsolutePath());
         } catch (IOException e) {
             System.out.println("❌ Fout bij schrijven CSV: " + e.getMessage());
         }
