@@ -3,10 +3,10 @@ package service;
 import model.Member;
 import repository.MemberRepository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public class MemberService {
-    private long lastMemberId = 0; // houdt bij wat de hoogste ID is
 
     private final MemberRepository memberRepository;
 
@@ -17,14 +17,28 @@ public class MemberService {
     public Member addMember(Member member) {
         validateMember(member);
 
-        // Als het ID null is (nieuw lid), geef automatisch een oplopend ID
-        if (member.getMemberId() == null) {
-            member.setMemberId(++lastMemberId);
-        } else {
-            // update lastMemberId als CSV-ID hoger is
-            if (member.getMemberId() > lastMemberId) {
-                lastMemberId = member.getMemberId();
-            }
+        // StartYear automatisch invullen
+        if (member.getStartYear() == 0) {
+            member.setStartYear(LocalDate.now().getYear());
+        }
+
+        // Eerst opslaan om een memberId te genereren
+        Member savedMember = memberRepository.saveMember(member);
+
+        // MembershipNumber automatisch genereren als het nog leeg is
+        if (savedMember.getMembershipNumber() == null || savedMember.getMembershipNumber().isBlank()) {
+            savedMember.setMembershipNumber(String.format("MBR-%d-%03d",
+                    LocalDate.now().getYear(), savedMember.getMemberId()));
+            // Opslaan met het nieuwe membershipNumber
+            savedMember = memberRepository.saveMember(savedMember);
+        }
+
+        return savedMember;
+    }
+    public Member updateMember(Member member) {
+        validateMember(member);
+        if (member.getMemberId() == null || memberRepository.findByMemberId(member.getMemberId()).isEmpty()) {
+            throw new MemberNotFoundException("Cannot update. Member not found with ID: " + member.getMemberId());
         }
         return memberRepository.saveMember(member);
     }
@@ -55,6 +69,8 @@ public class MemberService {
             throw new IllegalArgumentException("Member email cannot be empty");
         if (!member.getEmail().contains("@"))
             throw new IllegalArgumentException("Invalid email address");
+        if (member.getPhoneNumber() == null || member.getPhoneNumber().isBlank())
+            throw new IllegalArgumentException("Phone number cannot be empty");
     }
 
     public static class MemberNotFoundException extends RuntimeException {
