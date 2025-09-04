@@ -439,25 +439,82 @@ public class MainApp {
         }
     }
 
-    // Placeholder methods voor functionaliteiten
+    // View all loans of a given member
     private static void viewBorrowedBooks() {
-        System.out.println("\n📚 Weergeven van geleende boeken...");
-        System.out.println("Deze functionaliteit wordt nog geïmplementeerd.");
-        System.out.println("Druk op Enter om verder te gaan...");
+        System.out.println("\n📚 View Borrowed Books");
+        try {
+            System.out.print("Member ID (numeric): ");
+            Long memberId = Long.parseLong(scanner.nextLine().trim());
+
+            java.util.List<model.Loan> loans = loanService.getLoansByMember(memberId); // simple passthrough
+            if (loans == null || loans.isEmpty()) {
+                System.out.println("No loans for this member.");
+            } else {
+                System.out.println("Loans:");
+                for (model.Loan l : loans) {
+                    System.out.println(" - " + l);  // relies on Loan.toString()
+                }
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("❌ Invalid Member ID.");
+        } catch (Exception e) {
+            System.out.println("❌ " + e.getMessage());
+        }
+        System.out.println("Press Enter to continue...");
         scanner.nextLine();
     }
 
+    // Borrow a book for a member (IntecID has priority over ISBN)
     private static void borrowBook() {
-        System.out.println("\n📥 Boek lenen...");
-        System.out.println("Deze functionaliteit wordt nog geïmplementeerd.");
-        System.out.println("Druk op Enter om verder te gaan...");
+        System.out.println("\n📥 Borrow a Book");
+        try {
+            // Member must exist; service expects the internal numeric ID
+            System.out.print("Member ID (numeric): ");
+            Long memberId = Long.parseLong(scanner.nextLine().trim());
+
+            // Provide one of the two identifiers; IntecID is preferred if both are given
+            System.out.print("IntecID (enter to skip): ");
+            String intecID = scanner.nextLine();
+
+            System.out.print("ISBN (enter to skip): ");
+            String isbn = scanner.nextLine();
+
+            // Days with default 14 if empty
+            System.out.print("Days (default 14, enter to use default): ");
+            String d = scanner.nextLine();
+            int days = (d == null || d.isBlank()) ? 14 : Integer.parseInt(d.trim());
+
+            model.Loan loan = loanService.borrow(memberId, intecID, isbn, days); // may throw with clear messages
+            System.out.println("✅ Borrowed: " + loan);
+        } catch (NumberFormatException e) {
+            System.out.println("❌ Invalid number.");
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            // Service throws clear messages: member not found, book not found, no available copies, etc.
+            System.out.println("❌ " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("❌ Unexpected error: " + e.getMessage());
+        }
+        System.out.println("Press Enter to continue...");
         scanner.nextLine();
     }
 
+    // Return a loan by its loanId
     private static void returnBook() {
-        System.out.println("\n📤 Boek terugbrengen...");
-        System.out.println("Deze functionaliteit wordt nog geïmplementeerd.");
-        System.out.println("Druk op Enter om verder te gaan...");
+        System.out.println("\n📤 Return a Book");
+        try {
+            System.out.print("Loan ID: ");
+            Long loanId = Long.parseLong(scanner.nextLine().trim());
+
+            boolean ok = loanService.returnLoan(loanId); // returns true only if status was ACTIVE
+            System.out.println(ok ? "✅ Returned." : "⚠️ Not returned (status not ACTIVE).");
+        } catch (NumberFormatException e) {
+            System.out.println("❌ Invalid Loan ID.");
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            System.out.println("❌ " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("❌ Unexpected error: " + e.getMessage());
+        }
+        System.out.println("Press Enter to continue...");
         scanner.nextLine();
     }
 
