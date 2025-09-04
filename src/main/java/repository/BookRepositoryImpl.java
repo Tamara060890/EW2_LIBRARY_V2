@@ -5,10 +5,7 @@ import model.Book;
 import model.BookType;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class BookRepositoryImpl implements BookRepository {
@@ -18,7 +15,7 @@ public class BookRepositoryImpl implements BookRepository {
 
     // Constructor - laadt automatisch data bij instantiatie (net als Member)
     public BookRepositoryImpl() {
-        loadFromCSV();
+        //loadFromCSV();
     }
 
     @Override
@@ -73,7 +70,10 @@ public class BookRepositoryImpl implements BookRepository {
 
     @Override
     public List<Book> getAllBooks() {
-        return new ArrayList<>(bookInventory.values());
+        return bookInventory.values().stream()
+                .sorted(Comparator.comparing(Book::getIntecID))
+                .collect(Collectors.toList());
+
     }
 
     @Override
@@ -101,60 +101,60 @@ public class BookRepositoryImpl implements BookRepository {
     }
 
     // ================= CSV (precies zoals Member) =================
-    private void loadFromCSV() {
-        try (InputStream is = getClass().getClassLoader().getResourceAsStream(csvFileName)) {
-            if (is == null) {
-                System.out.println("❌ CSV bestand niet gevonden: " + csvFileName);
-                return;
-            }
-            BufferedReader br = new BufferedReader(new InputStreamReader(is));
-            String line;
-            boolean firstLine = true;
-            int maxIdNumber = 0; // Track highest ID to set counter
-
-            while ((line = br.readLine()) != null) {
-                if (firstLine) {
-                    firstLine = false;
-                    continue;
-                } // skip header
-
-                String[] parts = line.split(",");
-                if (parts.length != 7) continue;
-
-                try {
-                    String intecID = parts[0].trim();
-                    String title = parts[1].trim();
-                    String author = parts[2].trim();
-                    int publicationYear = Integer.parseInt(parts[3].trim());
-                    String isbn = parts[4].trim();
-                    int availableCopies = Integer.parseInt(parts[5].trim());
-                    BookType bookType = BookType.valueOf(parts[6].trim().toUpperCase());
-
-                    Book book = new Book(intecID, bookType, title, author, publicationYear, isbn, availableCopies);
-                    bookInventory.put(intecID, book);
-
-                    // Extract number from IntecID to update counter
-                    if (intecID.startsWith("INTEC")) {
-                        try {
-                            int idNumber = Integer.parseInt(intecID.substring(5));
-                            maxIdNumber = Math.max(maxIdNumber, idNumber);
-                        } catch (NumberFormatException e) {
-                            // Ignore malformed IDs
-                        }
-                    }
-                } catch (Exception e) {
-                    System.out.println("⚠️ Fout bij verwerken regel: " + line + " - " + e.getMessage());
-                }
-            }
-
-            // Set counter to next available number
-            nextIdCounter = maxIdNumber + 1;
-
-            System.out.println("✅ Books geladen uit CSV.");
-        } catch (IOException e) {
-            System.out.println("❌ Fout bij lezen CSV: " + e.getMessage());
-        }
-    }
+//    private void loadFromCSV() {
+//        try (InputStream is = getClass().getClassLoader().getResourceAsStream(csvFileName)) {
+//            if (is == null) {
+//                System.out.println("❌ CSV bestand niet gevonden: " + csvFileName);
+//                return;
+//            }
+//            BufferedReader br = new BufferedReader(new InputStreamReader(is));
+//            String line;
+//            boolean firstLine = true;
+//            int maxIdNumber = 0; // Track highest ID to set counter
+//
+//            while ((line = br.readLine()) != null) {
+//                if (firstLine) {
+//                    firstLine = false;
+//                    continue;
+//                } // skip header
+//
+//                String[] parts = line.split(",");
+//                if (parts.length != 7) continue;
+//
+//                try {
+//                    String intecID = parts[0].trim();
+//                    String title = parts[1].trim();
+//                    String author = parts[2].trim();
+//                    int publicationYear = Integer.parseInt(parts[3].trim());
+//                    String isbn = parts[4].trim();
+//                    int availableCopies = Integer.parseInt(parts[5].trim());
+//                    BookType bookType = BookType.valueOf(parts[6].trim().toUpperCase());
+//
+//                    Book book = new Book(intecID, bookType, title, author, publicationYear, isbn, availableCopies);
+//                    bookInventory.put(intecID, book);
+//
+//                    // Extract number from IntecID to update counter
+//                    if (intecID.startsWith("INTEC")) {
+//                        try {
+//                            int idNumber = Integer.parseInt(intecID.substring(5));
+//                            maxIdNumber = Math.max(maxIdNumber, idNumber);
+//                        } catch (NumberFormatException e) {
+//                            // Ignore malformed IDs
+//                        }
+//                    }
+//                } catch (Exception e) {
+//                    System.out.println("⚠️ Fout bij verwerken regel: " + line + " - " + e.getMessage());
+//                }
+//            }
+//
+//            // Set counter to next available number
+//            nextIdCounter = maxIdNumber + 1;
+//
+//            System.out.println("✅ Books geladen uit CSV.");
+//        } catch (IOException e) {
+//            System.out.println("❌ Fout bij lezen CSV: " + e.getMessage());
+//        }
+//    }
 
     private void saveToCSV() {
         // Sla terug naar target/resources bij runtime kan lastig zijn, daarom pad in project gebruiken
