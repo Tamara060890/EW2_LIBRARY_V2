@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Scanner;
 import java.util.List;
-import model.*
+import model.*;
 import repository.*;
 import service.LoanService;
 
@@ -457,7 +457,7 @@ public class MainApp {
         System.out.println("Press enter to continue...");
         scanner.nextLine();
     }
-    /*private static void searchByAuthor() {
+    private static void searchByAuthor() {
         System.out.print("\n🖋️ ENTER AUTHOR: ");
         String author = scanner.nextLine();
 
@@ -487,8 +487,8 @@ public class MainApp {
 
         System.out.println("Press enter to continue...");
         scanner.nextLine();
-    }*/
-            displaySearchResults(books, "auteur: " + author);
+    }
+           /* displaySearchResults(books, "auteur: " + author);
         } catch (Exception e) {
             System.out.println("❌ Fout bij zoeken: " + e.getMessage());
         }
