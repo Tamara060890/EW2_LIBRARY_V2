@@ -14,6 +14,7 @@ import java.util.List;
 import model.Book;
 // import your.package.service.BookService;
 import model.Member;
+import repository.MemberRepository;
 import service.BookService;
 // import your.package.repository.BookRepository;
 import repository.BookRepository;
@@ -32,7 +33,7 @@ public class MainApp {
 
     public static void main(String[] args) {
         // Repository en service initialiseren
-        repository.MemberRepository memberRepo = new repository.MemberRepositoryImpl();
+        MemberRepository memberRepo = new repository.MemberRepositoryImpl();
         memberService = new service.MemberService(memberRepo);
         //Menu starten
         showMainMenu();
@@ -395,6 +396,7 @@ public class MainApp {
         System.out.print("Email: "); String email = scanner.nextLine();
         System.out.print("Telefoonnummer: "); String phone = scanner.nextLine();
 
+        // Maak een nieuw lid aan
         Member member = new Member();
         member.setName(name);
         member.setEmail(email);
@@ -402,8 +404,13 @@ public class MainApp {
         member.setMembershipDate(LocalDate.now());
 
         try {
-            memberService.addMember(member);
-            System.out.println("✅ Lid toegevoegd: " + member.getName());
+            // Lid toevoegen via service
+            Member savedMember = memberService.addMember(member);
+
+            // Toon bevestiging met het gegenereerde membershipNumber
+            System.out.println("✅ Lid toegevoegd: " + savedMember.getName());
+            System.out.println("Membership Number: " + savedMember.getMembershipNumber());
+            System.out.println("Member ID: " + savedMember.getMemberId());
         } catch (IllegalArgumentException e) {
             System.out.println("❌ Fout: " + e.getMessage());
         }
@@ -416,11 +423,31 @@ public class MainApp {
         Long id = Long.parseLong(scanner.nextLine());
 
         try {
-            memberService.removeMember(id);
-            System.out.println("✅ Lid verwijderd.");
+            // Eerst lid ophalen om de gegevens te tonen
+            Member member = memberService.findMemberById(id);
+
+            // Toon lid info
+            System.out.println("⚠️ Je staat op het punt het volgende lid te verwijderen:");
+            System.out.println("ID: " + member.getMemberId());
+            System.out.println("Naam: " + member.getName());
+            System.out.println("Email: " + member.getEmail());
+            System.out.println("Telefoon: " + member.getPhoneNumber());
+            System.out.println("Membership Number: " + member.getMembershipNumber());
+            System.out.println("Membership Date: " + member.getMembershipDate());
+
+            // Bevestiging vragen
+            System.out.print("Weet je zeker dat je dit lid wilt verwijderen? (ja/nee): ");
+            String confirm = scanner.nextLine();
+            if (confirm.equalsIgnoreCase("ja")) {
+                memberService.removeMember(id);
+                System.out.println("✅ Lid verwijderd: " + member.getName());
+            } else {
+                System.out.println("❌ Verwijderen geannuleerd.");
+            }
         } catch (MemberService.MemberNotFoundException e) {
             System.out.println("❌ Fout: " + e.getMessage());
         }
+
         System.out.println("Druk op Enter om verder te gaan...");
         scanner.nextLine();
     }
@@ -431,15 +458,29 @@ public class MainApp {
 
         try {
             Member member = memberService.findMemberById(id);
+
             System.out.print("Nieuwe naam (" + member.getName() + "): ");
-            String name = scanner.nextLine(); if(!name.isBlank()) member.setName(name);
+            String name = scanner.nextLine();
+            if (!name.isBlank()) member.setName(name);
+
             System.out.print("Nieuw telefoonnummer (" + member.getPhoneNumber() + "): ");
-            String phone = scanner.nextLine(); if(!phone.isBlank()) member.setPhoneNumber(phone);
-            memberService.addMember(member); // Save changes
+            String phone = scanner.nextLine();
+            if (!phone.isBlank()) member.setPhoneNumber(phone);
+
+            System.out.print("Nieuw email (" + member.getEmail() + "): ");
+            String email = scanner.nextLine();
+            if (!email.isBlank()) member.setEmail(email);
+
+            // Opslaan via updateMember
+            memberService.updateMember(member);
+
             System.out.println("✅ Lidgegevens bijgewerkt: " + member.getName());
         } catch (MemberService.MemberNotFoundException e) {
             System.out.println("❌ Fout: " + e.getMessage());
+        } catch (IllegalArgumentException e) {
+            System.out.println("❌ Ongeldige invoer: " + e.getMessage());
         }
+
         System.out.println("Druk op Enter om verder te gaan...");
         scanner.nextLine();
     }
@@ -470,8 +511,16 @@ public class MainApp {
         members.sort((m1, m2) -> m1.getMemberId().compareTo(m2.getMemberId()));
 
         System.out.println("\n📜 Alle leden (gesorteerd op ID):");
+        System.out.println("ID | Naam | Email | Telefoon | Membership Number");
+        System.out.println("---------------------------------------------------");
         for (Member m : members) {
-            System.out.println(m.getMemberId() + " | " + m.getName() + " | " + m.getEmail());
+            System.out.println(
+                    m.getMemberId() + " | " +
+                            m.getName() + " | " +
+                            m.getEmail() + " | " +
+                            m.getPhoneNumber() + " | " +
+                            m.getMembershipNumber()
+            );
         }
         System.out.println("Druk op Enter om verder te gaan...");
         scanner.nextLine();
