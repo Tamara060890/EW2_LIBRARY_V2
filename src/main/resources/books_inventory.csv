@@ -1,22 +1,22 @@
-Title,Author,Year,ISBN,Copies,BookType
-Head First Java,Kathy Sierra,2005,9780596009205,5,TUTORIAL
-Effective Java,Joshua Bloch,2018,9780134685991,4,REFERENCE
-Clean Code,Robert C. Martin,2008,9780132350884,3,CONCEPTUAL
-Java Projects,Bpb Publications,2020,9789389898046,6,PROJECT_BASED
-The Pragmatic Programmer,Andrew Hunt,1999,9780201616224,2,CAREER_SOFT_SKILLS
-Cloud Native Java,Josh Long,2017,9781449374648,3,TRENDS_FUTURE
-Modern Java in Action,Raoul-Gabriel Urma,2019,9781617293566,4,LANGUAGE_SPECIFIC
-Spring in Action,Craig Walls,2022,9781617297571,5,FRAMEWORK_TOOL
-Java Concurrency in Practice,Brian Goetz,2006,9780321349606,2,LANGUAGE_SPECIFIC
-Java: A Beginner’s Guide,Herbert Schildt,2021,9781260440218,5,TUTORIAL
-Refactoring,Martin Fowler,2019,9780134757599,3,CONCEPTUAL
-Java Performance,Scott Oaks,2014,9781449358457,2,TRENDS_FUTURE
-Hibernate Tips,Thorben Janssen,2017,9781541174546,4,FRAMEWORK_TOOL
-Soft Skills,John Sonmez,2014,9781617292397,3,CAREER_SOFT_SKILLS
-Design Patterns,Gamma et al.,1994,9780201633610,2,CONCEPTUAL
-Test-Driven Development,Kent Beck,2002,9780321146533,3,TUTORIAL
-Microservices Patterns,Chris Richardson,2018,9781617294544,4,FRAMEWORK_TOOL
-Java Cookbook,Ian F. Darwin,2020,9781492072586,5,REFERENCE
-Algorithms in Java,Robert Sedgewick,2002,9780201361209,2,CONCEPTUAL
-Building Microservices,Sam Newman,2015,9781491950359,3,TRENDS_FUTURE
+IntecID, Title,Author,publicationYear,ISBN,Copies,BookType
+INTEC001, Effective Java, Joshua Block, 2001, 9780134685991, 4, LANGUAGE_SPECIFIC
+Intec002, Head First Java,Kathy Sierra,2005,9780596009205,5,TUTORIAL
+Intec003, Clean Code,Robert C. Martin,2008,9780132350884,3,CONCEPTUAL
+Intec004, Java Projects,Bpb Publications,2020,9789389898046,6,PROJECT_BASED
+Intec005, The Pragmatic Programmer,Andrew Hunt,1999,9780201616224,2,CAREER_SOFT_SKILLS
+Intec006, Cloud Native Java,Josh Long,2017,9781449374648,3,TRENDS_FUTURE
+Intec007, Modern Java in Action,Raoul-Gabriel Urma,2019,9781617293566,4,LANGUAGE_SPECIFIC
+Intec008, Spring in Action,Craig Walls,2022,9781617297571,5,FRAMEWORK_TOOL
+Intec009, Java Concurrency in Practice,Brian Goetz,2006,9780321349606,2,LANGUAGE_SPECIFIC
+Intec010, Java: A Beginner’s Guide,Herbert Schildt,2021,9781260440218,5,TUTORIAL
+Intec011, Refactoring,Martin Fowler,2019,9780134757599,3,CONCEPTUAL
+Intec012, Java Performance,Scott Oaks,2014,9781449358457,2,TRENDS_FUTURE
+Intec013, Hibernate Tips,Thorben Janssen,2017,9781541174546,4,FRAMEWORK_TOOL
+Intec014, Soft Skills,John Sonmez,2014,9781617292397,3,CAREER_SOFT_SKILLS
+Intec015, Design Patterns,Gamma et al.,1994,9780201633610,2,CONCEPTUAL
+Intec016, Test-Driven Development,Kent Beck,2002,9780321146533,3,TUTORIAL
+Intec017, Microservices Patterns,Chris Richardson,2018,9781617294544,4,FRAMEWORK_TOOL
+Intec018, Java Cookbook,Ian F. Darwin,2020,9781492072586,5,REFERENCE
+Intec019, Algorithms in Java,Robert Sedgewick,2002,9780201361209,2,CONCEPTUAL
+Intec020, Building Microservices,Sam Newman,2015,9781491950359,3,TRENDS_FUTURE
 

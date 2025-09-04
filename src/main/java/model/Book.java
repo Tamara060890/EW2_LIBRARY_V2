@@ -72,4 +72,16 @@ public class Book {
     public void setAvailableCopies(int availableCopies) {
         this.availableCopies = availableCopies;
     }
+
+    @Override
+    public String toString() {
+        return "\n📘 Titel: " + title +
+                "\n✍️ Auteur: " + author +
+                "\n📅 Jaar: " + publicationYear +
+                "\n🔢 ISBN: " + isbn +
+                "\n📚 Exemplaren: " + availableCopies +
+                "\n📖 Type: " + bookType +
+                "\n🆔 Intec ID: " + intecID;
+
+    }
 }
