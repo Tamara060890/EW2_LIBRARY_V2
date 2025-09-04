@@ -18,14 +18,14 @@ public class Member {
 
     // Volledige constructor
     public Member(Long memberId, String membershipNumber, String name, int startYear,
-              String phoneNumber, String email, LocalDate membershipDate) {
-    this.memberId = memberId;
-    this.membershipNumber = membershipNumber;
-    this.name = name;
-    this.startYear = startYear;
-    this.phoneNumber = phoneNumber;
-    this.email = email;
-    this.membershipDate = membershipDate;
+                  String phoneNumber, String email, LocalDate membershipDate) {
+        this.memberId = memberId;
+        this.membershipNumber = membershipNumber;
+        this.name = name;
+        this.startYear = startYear;
+        this.phoneNumber = phoneNumber;
+        this.email = email;
+        this.membershipDate = membershipDate;
     }
 
     public Long getMemberId() {
@@ -83,7 +83,7 @@ public class Member {
     public void setMembershipDate(LocalDate membershipDate) {
         this.membershipDate = membershipDate;
     }
-    
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -94,6 +94,6 @@ public class Member {
 
     @Override
     public int hashCode() {
-        return getClass().hashCode();
+        return memberId != null ? memberId.hashCode() : 0;
     }
 }

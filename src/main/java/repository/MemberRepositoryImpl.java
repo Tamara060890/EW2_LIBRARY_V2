@@ -7,20 +7,24 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.nio.file.Files;
 
 public class MemberRepositoryImpl implements MemberRepository {
 
     private final List<Member> members = new ArrayList<>();
-    private final String csvFileName = "members_inventory.csv";  // classpath-bestand
+    private final String csvFile = "data/members_inventory.csv"; // runtime CSV
 
     public MemberRepositoryImpl() {
-        loadFromCSV();
+        loadFromCSV();   // laad CSV bij start
     }
 
     // ================= Repository-methoden =================
     public Member saveMember(Member member) {
         if (member.getMemberId() == null) {
-            long newId = members.stream().mapToLong(Member::getMemberId).max().orElse(0) + 1;
+            long newId = members.stream()
+                    .mapToLong(Member::getMemberId)
+                    .max()
+                    .orElse(0) + 1;
             member.setMemberId(newId);
         } else {
             members.removeIf(m -> m.getMemberId().equals(member.getMemberId()));
@@ -53,15 +57,18 @@ public class MemberRepositoryImpl implements MemberRepository {
     }
 
     // ================= CSV =================
+
     private void loadFromCSV() {
-        try (InputStream is = getClass().getClassLoader().getResourceAsStream(csvFileName)) {
-            if (is == null) {
-                System.out.println("❌ CSV bestand niet gevonden: " + csvFileName);
-                return;
-            }
-            BufferedReader br = new BufferedReader(new InputStreamReader(is));
+        File file = new File(csvFile);
+        if (!file.exists()) {
+            System.out.println("⚠️ CSV niet gevonden, maak een nieuw bestand bij eerste save.");
+            return;
+        }
+
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String line;
             boolean firstLine = true;
+            members.clear();
             while ((line = br.readLine()) != null) {
                 if (firstLine) { firstLine = false; continue; } // skip header
                 String[] parts = line.split(",");
@@ -77,15 +84,16 @@ public class MemberRepositoryImpl implements MemberRepository {
                 member.setMembershipDate(LocalDate.parse(parts[6]));
                 members.add(member);
             }
-            System.out.println("✅ Members geladen uit CSV.");
+            //System.out.println("✅ Members geladen uit CSV (" + members.size() + ")");
         } catch (IOException e) {
             System.out.println("❌ Fout bij lezen CSV: " + e.getMessage());
         }
     }
 
     private void saveToCSV() {
-        // Sla terug naar target/resources bij runtime kan lastig zijn, daarom pad in project gebruiken
-        File file = new File("src/main/resources/" + csvFileName);
+        File file = new File(csvFile);
+        file.getParentFile().mkdirs(); // maak data/ aan als die nog niet bestaat
+
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(file))) {
             bw.write("memberId,membershipNumber,name,startYear,phoneNumber,email,membershipDate\n");
             for (Member m : members) {
