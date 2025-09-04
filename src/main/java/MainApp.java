@@ -52,7 +52,7 @@ public class MainApp {
         memberService = new service.MemberService(memberRepo);
 
         // 3. Automatisch inladen van books_inventory.csv bij opstart
-        bookService.loadBooksFromFile("books_inventory.csv");
+        bookService.loadBooksFromFile("books_inventory00.csv");
         
         //4. Start menu
         showMainMenu();
@@ -299,7 +299,9 @@ public class MainApp {
                     break;
                 case 8 :
                     showMemberLoansMenu();
-
+                case 0:
+                    showLibraryManagementSystem();
+                    break;
                 default:
                     System.out.println("❌ Invalid choice. Please try again.");
             }
