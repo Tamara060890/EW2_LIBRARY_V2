@@ -21,14 +21,23 @@ public class MemberRepositoryImpl implements MemberRepository {
     // ================= Repository-methoden =================
     public Member saveMember(Member member) {
         if (member.getMemberId() == null) {
-            long newId = members.stream()
-                    .mapToLong(Member::getMemberId)
-                    .max()
-                    .orElse(0) + 1;
+            // Alle bestaande IDs verzamelen en sorteren
+            List<Long> existingIds = members.stream()
+                    .map(Member::getMemberId)
+                    .sorted()
+                    .toList();
+
+            long newId = 1;
+            for (long id : existingIds) {
+                if (id != newId) break; // eerste ontbrekende ID gevonden
+                newId++;
+            }
             member.setMemberId(newId);
         } else {
+            // Als memberId bestaat -> overschrijven
             members.removeIf(m -> m.getMemberId().equals(member.getMemberId()));
         }
+
         members.add(member);
         saveToCSV();
         return member;
@@ -36,7 +45,9 @@ public class MemberRepositoryImpl implements MemberRepository {
 
     @Override
     public Optional<Member> findByMemberId(Long memberId) {
-        return members.stream().filter(m -> m.getMemberId().equals(memberId)).findFirst();
+        return members.stream()
+                .filter(m -> m.getMemberId().equals(memberId))
+                .findFirst();
     }
 
     @Override
