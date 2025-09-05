@@ -69,33 +69,45 @@ public class MemberRepositoryImpl implements MemberRepository {
 
     // ================= CSV =================
 
+    /**
+     * Laadt alle leden uit het CSV-bestand en vult de members-lijst.
+     */
     private void loadFromCSV() {
-        File file = new File(csvFile);
+        File file = new File(csvFile); // Verwijzing naar het CSV-bestand
+
+        // Controleer of het bestand bestaat
         if (!file.exists()) {
             System.out.println("⚠️ CSV niet gevonden, maak een nieuw bestand bij eerste save.");
-            return;
+            return; // Stop met laden als er geen bestand is
         }
 
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String line;
-            boolean firstLine = true;
-            members.clear();
+            boolean firstLine = true; // Om de headerregel over te slaan
+            members.clear(); // Leeg de huidige lijst zodat we opnieuw laden
+            // Lees elke regel van het CSV-bestand
             while ((line = br.readLine()) != null) {
-                if (firstLine) { firstLine = false; continue; } // skip header
-                String[] parts = line.split(",");
-                if (parts.length != 7) continue;
-
+                // Sla de eerste regel (header) over
+                if (firstLine) {
+                    firstLine = false;
+                    continue;
+                }
+                String[] parts = line.split(","); // Splits de regel op komma's
+                if (parts.length != 7) continue; // Sla regels over die niet 7 kolommen hebben
+                // Maak een nieuw Member-object en vul de gegevens
                 Member member = new Member();
-                member.setMemberId(Long.parseLong(parts[0]));
-                member.setMembershipNumber(parts[1]);
-                member.setName(parts[2]);
-                member.setStartYear(Integer.parseInt(parts[3]));
-                member.setPhoneNumber(parts[4]);
-                member.setEmail(parts[5]);
-                member.setMembershipDate(LocalDate.parse(parts[6]));
+                member.setMemberId(Long.parseLong(parts[0]));           // ID
+                member.setMembershipNumber(parts[1]);                  // Membershipnummer
+                member.setName(parts[2]);                               // Naam
+                member.setStartYear(Integer.parseInt(parts[3]));       // Startjaar
+                member.setPhoneNumber(parts[4]);                       // Telefoonnummer
+                member.setEmail(parts[5]);                              // Email
+                member.setMembershipDate(LocalDate.parse(parts[6]));    // Datum lidmaatschap
+                // Voeg het Member-object toe aan de lijst
                 members.add(member);
             }
-            //System.out.println("✅ Members geladen uit CSV (" + members.size() + ")");
+            // Optioneel: print aantal geladen leden
+            // System.out.println("✅ Members geladen uit CSV (" + members.size() + ")");
         } catch (IOException e) {
             System.out.println("❌ Fout bij lezen CSV: " + e.getMessage());
         }

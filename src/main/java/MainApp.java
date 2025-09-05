@@ -78,17 +78,26 @@ public class MainApp {
 
     // Authentication methode to enter Library Self Service
     private static boolean authenticateMember() {
-        System.out.print("🔑 Enter your email to login: ");
-        String email = scanner.nextLine();
+        int attemptsLeft = 3;
 
-        try {
-            Member member = memberService.searchMemberByEmail(email); // controleert of de email in CSV staat
-            System.out.println("✅ Welcome, " + member.getName() + " (ID: " + member.getMemberId() + ")!");
-            return true; // login succesvol
-        } catch (MemberService.MemberNotFoundException e) {
-            System.out.println("❌ Email not found. Try again.");
-            return false; // login mislukt
+        while (attemptsLeft > 0) {
+            System.out.print("🔑 Enter your email to login: ");
+            String email = scanner.nextLine();
+
+            try {
+                Member member = memberService.searchMemberByEmail(email);
+                System.out.println("✅ Welcome, " + member.getName() + " (ID: " + member.getMemberId() + ")!");
+                return true; // login succesvol
+            } catch (MemberService.MemberNotFoundException e) {
+                attemptsLeft--;
+                if (attemptsLeft > 0) {
+                    System.out.println("❌ Email not found. Try again (" + attemptsLeft + " attempts left).");
+                } else {
+                    System.out.println("❌ Too many failed attempts. Returning to main menu.");
+                }
+            }
         }
+        return false; // login mislukt
     }
 
     // Authentication method to enter Library Management
@@ -115,11 +124,11 @@ public class MainApp {
 
             switch (choice) {
                 case 1:
-                    boolean loggedIn = false;
-                    while (!loggedIn) {
-                        loggedIn = authenticateMember(); // vraagt om email tot het correct is
+                    // probeer inloggen met maximaal 3 pogingen
+                    boolean loggedIn = authenticateMember(); // authenticateMember handelt zelf 3 pogingen
+                    if (loggedIn) {
+                        showLibrarySelfService(); // laat Self Service-menu zien na succesvolle login
                     }
-                    showLibrarySelfService(); // laat Self Service-menu zien na succesvolle login
                     break;
                 case 2:
                     if (authenticateManager()) {
@@ -481,7 +490,6 @@ public class MainApp {
             // Provide one of the two identifiers; IntecID is preferred if both are given
             System.out.print("\uD83C\uDD94 Enter Intec ID (press enter to skip): ");
             String intecID = scanner.nextLine();
-
             System.out.print("\uD83D\uDD22 Enter ISBN (press enter to skip): ");
             String isbn = scanner.nextLine();
 
