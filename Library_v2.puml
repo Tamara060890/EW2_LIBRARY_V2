@@ -5,23 +5,33 @@
 ' Model Package
 package "model" {
     class Book {
-        -Map<BookType, Integer>
-        -int ID
-        -String title
-        -String author
-        -int publicationYear
-        -String isbn
-        -int availableCopies
-        -BookType bookType
-        +Book()
-        +getIsbn(): String
-        +getTitle(): String
-        +getAuthor(): String
-        +getPublicationYear(): int
-        +getAvailableCopies(): int
-        +getBookType(): BookType
-        +setAvailableCopies(int): void
+        - intecID: String
+        - bookType: BookType
+        - title: String
+        - author: String
+        - publicationYear: int
+        - isbn: String
+        - availableCopies: int
+
+        + Book(intecID: String, bookType: BookType, title: String,
+               author: String, publicationYear: int,
+               isbn: String, availableCopies: int)
+
+        + getIntecID(): String
+        + getBookType(): BookType
+        + getTitle(): String
+        + setTitle(title: String): void
+        + getAuthor(): String
+        + setAuthor(author: String): void
+        + getPublicationYear(): int
+        + setPublicationYear(publicationYear: int): void
+        + getIsbn(): String
+        + setIsbn(isbn: String): void
+        + getAvailableCopies(): int
+        + setAvailableCopies(availableCopies: int): void
+        + toString(): String
     }
+
 
     class Member {
          - Long memberId
@@ -51,51 +61,53 @@ package "model" {
     }
 
     class Loan {
-        -Long id
-        -Book book
-        -Member member
-        -LocalDate loanDate
-        -LocalDate dueDate
-        -LocalDate returnDate
-        -LoanStatus status
-        +Loan()
-        +getId(): Long
-        +getBook(): Book
-        +getMember(): Member
-        +returnBook(): void
-        +isOverdue(): boolean
+        - loanId: Long
+        - book: Book
+        - member: Member
+        - loanDate: LocalDate
+        - dueDate: LocalDate
+        - returnDate: LocalDate
+        - status: LoanStatus
+
+        + Loan()
+        + Loan(book: Book, member: Member, loanDate: LocalDate,
+               dueDate: LocalDate, returnDate: LocalDate)
+
+        + getLoanId(): Long
+        + setLoanId(loanId: Long): void
+        + getBook(): Book
+        + setBook(book: Book): void
+        + getMember(): Member
+        + setMember(member: Member): void
+        + getLoanDate(): LocalDate
+        + setLoanDate(loanDate: LocalDate): void
+        + getDueDate(): LocalDate
+        + setDueDate(dueDate: LocalDate): void
+        + getReturnDate(): LocalDate
+        + setReturnDate(returnDate: LocalDate): void
+        + getStatus(): LoanStatus
+        + setStatus(status: LoanStatus): void
+
+        + returnBook(): void
+        + isReturned(): boolean
+        + isOverdue(): boolean
+        + toString(): String
     }
 
-    enum BookType {
-        TUTORIAL
-        REFERENCE
-        CONCEPTUAL
-        PROJECT_BASED
-        CAREER_SOFT_SKILLS
-        TRENDS_FUTURE
-        LANGUAGE_SPECIFIC
-        FRAMEWORK_TOOL_SPECIFIC
-    }
-
-    enum LoanStatus {
-        ACTIVE
-        RETURNED
-        OVERDUE
-        LOST
-    }
 }
 
 ' Repository Package
 package "repository" {
     interface BookRepository {
-        +add(Book): Book
-        +delete(Long): void
-        +update(Book): void
-        +findById(Long): Optional<Book>
-        +findByIsbn(String): Optional<Book>
-        +findAll(): List<Book>
-        +findAvailableBooks(): List<Book>
-
+        + addBook(book: Book): void
+        + deleteBook(intecID: String): boolean
+        + updateBook(updatedBook: Book): void
+        + searchBookTitle(title: String): Book
+        + searchBookAuthor(author: String): List<Book>
+        + searchBookISBN(isbn: String): Book
+        + searchBookIntecID(intecID: String): Book
+        + getAllBooks(): List<Book>
+        + loadBooksFromFile(fileName: String): void
     }
 
     interface MemberRepository {
@@ -107,24 +119,37 @@ package "repository" {
     }
 
     interface LoanRepository {
-        +save(Loan): Loan
-        +findById(Long): Optional<Loan>
-        +findByMemberId(Long): List<Loan>
-        +findActiveLoans(): List<Loan>
-        +findOverdueLoans(): List<Loan>
-        +delete(Long): void
+        + save(loan: Loan): Loan
+        + findById(loanId: Long): Loan
+        + findByMemberId(memberId: Long): List<Loan>
+        + findActiveLoans(): List<Loan>
+        + findOverdueLoans(): List<Loan>
+        + findAll(): List<Loan>
+        + delete(loanId: Long): boolean
     }
+
 
     package "impl" {
         class BookRepositoryImpl {
-            -List<Book> books
-            +save(Book): Book
-            +findById(Long): Optional<Book>
-            +findByIsbn(String): Optional<Book>
-            +findAll(): List<Book>
-            +findAvailableBooks(): List<Book>
-            +delete(Long): void
+            - bookInventory: Map<String, Book>
+            - csvFileName: String
+            - nextIdCounter: int
+
+            + BookRepositoryImpl()
+            + addBook(book: Book): void
+            + deleteBook(intecID: String): boolean
+            + updateBook(updatedBook: Book): void
+            + searchBookTitle(title: String): Book
+            + searchBookAuthor(author: String): List<Book>
+            + searchBookISBN(isbn: String): Book
+            + searchBookIntecID(intecID: String): Book
+            + getAllBooks(): List<Book>
+            + loadBooksFromFile(fileName: String): void
+            + getNextIdCounter(): int
+            - updateCounterFromId(intecID: String): void
+            - saveToCSV(): void
         }
+
 
         class MemberRepositoryImpl {
             - members: List<Member>
@@ -140,29 +165,41 @@ package "repository" {
         }
 
         class LoanRepositoryImpl {
-            -List<Loan> loans
-            +save(Loan): Loan
-            +findById(Long): Optional<Loan>
-            +findByMemberId(Long): List<Loan>
-            +findActiveLoans(): List<Loan>
-            +findOverdueLoans(): List<Loan>
-            +delete(Long): void
+            - loans: List<Loan>
+            - nextLoanId: Long
+
+            + save(loan: Loan): Loan
+            + findById(loanId: Long): Loan
+            + findByMemberId(memberId: Long): List<Loan>
+            + findActiveLoans(): List<Loan>
+            + findOverdueLoans(): List<Loan>
+            + findAll(): List<Loan>
+            + delete(loanId: Long): boolean
         }
+
     }
 }
 
 ' Service Package
 package "service" {
     class BookService {
-        -BookRepository bookRepository
-        +BookService(BookRepository)
-        +addBook(Book): Book
-        +findBookById(Long): Book
-        +findBookByIsbn(String): Book
-        +getAllBooks(): List<Book>
-        +getAvailableBooks(): List<Book>
-        +updateBook(Book): Book
-        +deleteBook(Long): void
+        - bookRepository: BookRepositoryImpl
+
+        + BookService(bookRepository: BookRepository)
+        - generateIntecID(): String
+        + addBook(bookType: BookType, title: String, author: String, publicationYear: int, isbn: String, availableCopies: int): Book
+        + deleteBook(intecID: String): boolean
+        + updateBook(updatedBook: Book): void
+        + searchBookTitle(title: String): Book
+        + searchBookAuthor(author: String): List<Book>
+        + searchBookISBN(isbn: String): Book
+        + searchBookIntecID(intecID: String): Book
+        + getAllBooks(): List<Book>
+        + searchBooksByType(bookType: BookType): List<Book>
+        + searchBooksByTypeReference(referenceNumber: int): List<Book>
+        + displayBookTypes(): void
+        + loadBooksFromFile(fileName: String): void
+        + showBookStatistics(): void
     }
 
     class MemberService {
@@ -177,20 +214,22 @@ package "service" {
         - validateMember(member: Member): void
     }
 
-
     class LoanService {
-        -LoanRepository loanRepository
-        -BookRepository bookRepository
-        -MemberRepository memberRepository
-        +LoanService(LoanRepository, BookRepository, MemberRepository)
-        +borrowBook(Long, Long): Loan
-        +returnBook(Long): Loan
-        +findLoanById(Long): Loan
-        +findLoansByMember(Long): List<Loan>
-        +getActiveLoans(): List<Loan>
-        +getOverdueLoans(): List<Loan>
-        +calculateFine(Loan): BigDecimal
+        - loanRepo: LoanRepository
+        - bookRepo: BookRepository
+        - memberRepo: MemberRepository
+
+        + LoanService(loanRepo: LoanRepository, bookRepo: BookRepository, memberRepo: MemberRepository)
+        + borrow(memberId: Long, intecID: String, isbn: String): Loan
+        + borrow(memberId: Long, intecID: String, isbn: String, days: int): Loan
+        + returnLoan(loanId: Long): boolean
+        + getById(id: Long): Loan
+        + getActiveLoans(): List<Loan>
+        + getOverdueLoans(): List<Loan>
+        + getLoansByMember(memberId: Long): List<Loan>
+        + getAllLoans(): List<Loan>
     }
+
 }
 
 '' Facade Package
