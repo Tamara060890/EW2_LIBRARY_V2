@@ -32,6 +32,9 @@ public class MainApp {
     private static BookService bookService;
     private static MemberService memberService;  // Voor later
     private static LoanService loanService;
+    // Self Service: keep the logged-in user (set after email login)
+    private static Member currentUser = null;
+
 
 
 
@@ -80,12 +83,14 @@ public class MainApp {
     private static boolean authenticateMember() {
         int attemptsLeft = 3;
 
+
         while (attemptsLeft > 0) {
             System.out.print("🔑 Enter your email to login: ");
             String email = scanner.nextLine();
 
             try {
                 Member member = memberService.searchMemberByEmail(email);
+                currentUser = member; // keep the logged-in user for self-service views
                 System.out.println("✅ Welcome, " + member.getName() + " (ID: " + member.getMemberId() + ")!");
                 return true; // login succesvol
             } catch (MemberService.MemberNotFoundException e) {
@@ -96,6 +101,7 @@ public class MainApp {
                     System.out.println("❌ Too many failed attempts. Returning to main menu.");
                 }
             }
+
         }
         return false; // login mislukt
     }
@@ -311,6 +317,7 @@ public class MainApp {
                     break;
                 case 8 :
                     showMemberLoansMenu();
+                    break;
                 case 0:
                     inBookManagement = false;
                     break;
@@ -336,12 +343,16 @@ public class MainApp {
             switch (c) {
                 case 1 :
                     borrowBook();        // reuses existing method
+                    break;
                 case 2 :
                     returnBook();        // reuses existing method
+                    break;
                 case 3 :
                     listLoansByMember(); // new method below
+                    break;
                 case 4 :
                     inLoans = false;
+                    break;
                 default :
                     System.out.println("❌ Invalid choice. Please try again.");
             }
@@ -454,30 +465,44 @@ public class MainApp {
 
     // LOAN MANAGEMENT METHODS
 
-    // View all loans of a given member
+    // View all loans of the (logged-in) member, or a given member ID
     private static void viewBorrowedBooks() {
         System.out.println("\n📚 View Borrowed Books");
-        try {
-            System.out.print("Member ID (numeric): ");
-            Long memberId = Long.parseLong(scanner.nextLine().trim());
 
-            java.util.List<model.Loan> loans = loanService.getLoansByMember(memberId); // simple passthrough
+        Long memberId = null;
+        if (currentUser != null && currentUser.getMemberId() != null) {
+            memberId = currentUser.getMemberId();             // on utilise l'utilisateur connecté
+        } else {
+            try {
+                System.out.print("Member ID (numeric): ");
+                memberId = Long.parseLong(scanner.nextLine().trim());
+            } catch (NumberFormatException e) {
+                System.out.println("❌ Invalid Member ID.");
+                System.out.println("Press Enter to continue...");
+                scanner.nextLine();
+                return;
+            }
+        }
+
+        try {
+            java.util.List<model.Loan> loans = loanService.getLoansByMember(memberId);
             if (loans == null || loans.isEmpty()) {
                 System.out.println("No loans for this member.");
             } else {
                 System.out.println("Loans:");
                 for (model.Loan l : loans) {
-                    System.out.println(" - " + l);  // relies on Loan.toString()
+                    printLoan(l); // affichage lisible d’un prêt
                 }
             }
-        } catch (NumberFormatException e) {
-            System.out.println("❌ Invalid Member ID.");
         } catch (Exception e) {
             System.out.println("❌ " + e.getMessage());
         }
+
         System.out.println("Press Enter to continue...");
         scanner.nextLine();
     }
+
+
 
     // Borrow a book for a member (IntecID has priority over ISBN)
     private static void borrowBook() {
@@ -498,8 +523,14 @@ public class MainApp {
             String d = scanner.nextLine();
             int days = (d == null || d.isBlank()) ? 14 : Integer.parseInt(d.trim());
 
-            model.Loan loan = loanService.borrow(memberId, intecID, isbn, days); // may throw with clear messages
-            System.out.println("✅ Borrowed: " + loan);
+            model.Loan loan = loanService.borrow(memberId, intecID, isbn, days); // Clear display
+            System.out.println("✅ Borrowed:");
+            printLoan(loan); // Display remaining copies (the same Book object has been decremented in the service)
+            model.Book b = loan.getBook();
+            if (b != null) {
+                System.out.println("📦 Copies available now: " + b.getAvailableCopies());
+            }
+
         } catch (NumberFormatException e) {
             System.out.println("❌ Invalid number.");
         } catch (IllegalArgumentException | IllegalStateException e) {
@@ -564,6 +595,19 @@ public class MainApp {
         System.out.println("Press enter to continue...");
         scanner.nextLine();
     }
+    // Pretty-print a single loan (helper for console output)
+    private static void printLoan(model.Loan l) {
+        System.out.println("📄 Loan Details:");
+        System.out.println("🆔 Loan ID: " + (l.getLoanId() != null ? l.getLoanId() : "null"));
+        System.out.println("📚 Book: " + (l.getBook() != null ? l.getBook().getTitle() : "null"));
+        System.out.println("👤 Member: " + (l.getMember() != null ? l.getMember().getName() : "null"));
+        System.out.println("📅 Loan Date: " + l.getLoanDate());
+        System.out.println("📅 Due Date: " + l.getDueDate());
+        System.out.println("📅 Return Date: " + l.getReturnDate());
+        System.out.println("📌 Status: " + l.getStatus());
+        System.out.println();
+    }
+
 
     private static void searchByBookType() {
         bookService.displayBookTypes(); // Show all types
